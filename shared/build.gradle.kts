@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.compose")
     kotlin("plugin.serialization")
     id("dev.icerock.mobile.multiplatform-resources")
+    id("com.squareup.sqldelight")
 }
 
 version = "1.0-SNAPSHOT"
@@ -23,6 +24,7 @@ kotlin {
         framework {
             baseName = "shared"
             isStatic = true
+//            export("com.mohamedrejeb.calf:calf-ui:0.1.1")
         }
         extraSpecAttributes["resources"] =
             "['src/commonMain/resources/**', 'src/iosMain/resources/**']"
@@ -35,7 +37,7 @@ kotlin {
     val koin_android_version = "3.3.3"
     val koin_android_compose_version = "3.4.2"
     val voyagerVersion = "1.0.0-rc04"
-    val mokoResourcesVersion = "0.21.2"
+    val mokoResourcesVersion = "0.23.0"
 
     sourceSets {
         val commonMain by getting {
@@ -68,6 +70,26 @@ kotlin {
                 api("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
                 api("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
                 implementation("cafe.adriel.voyager:voyager-koin:$voyagerVersion")
+
+                // kti
+                implementation(libs.sqlDelight.coroutinesExt)
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
+
+                api(libs.touchlab.kermit)
+                implementation(libs.kotlinx.serialization.json)
+
+                implementation(platform("com.aallam.openai:openai-client-bom:3.3.0"))
+                implementation("com.aallam.openai:openai-client")
+
+                implementation(libs.bundles.ktor.common)
+                implementation(libs.touchlab.stately)
+
+//                // For Adaptive UI components
+//                implementation("com.mohamedrejeb.calf:calf-ui:0.1.1")
+//
+//// For Adaptive FilePicker
+//                implementation("com.mohamedrejeb.calf:calf-file-picker:0.1.1")
             }
         }
         val androidMain by getting {
@@ -83,6 +105,11 @@ kotlin {
                 api("io.insert-koin:koin-androidx-navigation:$koin_android_version")
                 // Compose
                 api("io.insert-koin:koin-androidx-compose:$koin_android_compose_version")
+
+//                implementation(libs.androidx.lifecycle.viewmodel)
+                implementation(libs.sqlDelight.android)
+                implementation(libs.ktor.client.okHttp)
+                implementation("io.ktor:ktor-client-okhttp")
             }
         }
         val iosMain by getting {
@@ -122,4 +149,10 @@ multiplatformResources {
     //multiplatformResourcesVisibility = MRVisibility.Internal // optional, default Public
     iosBaseLocalizationRegion = "en" // optional, default "en"
     multiplatformResourcesSourceSet = "commonMain"  // optional, default "commonMain"
+}
+
+sqldelight {
+    database("KaMPKitDb") {
+        packageName = "co.touchlab.kampkit.db"
+    }
 }
