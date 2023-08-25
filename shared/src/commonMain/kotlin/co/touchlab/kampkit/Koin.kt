@@ -47,7 +47,7 @@ fun initKoin(vararg modules: Module): KoinApplication {
     return koinApplication
 }
 
-private val coreModule = module {
+val coreModule = module {
     single {
         DatabaseHelper(
             sqlDriver = get(),

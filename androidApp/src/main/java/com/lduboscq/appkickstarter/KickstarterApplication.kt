@@ -2,6 +2,7 @@ package com.lduboscq.appkickstarter
 
 import android.app.Application
 import com.lduboscq.appkickstarter.di.androidAppModule
+import com.lduboscq.appkickstarter.di.appModule
 import com.lduboscq.appkickstarter.di.initKoin
 import com.lduboscq.appkickstarter.ui.appContextForImagesMP
 import io.github.aakira.napier.DebugAntilog
@@ -21,7 +22,8 @@ class KickstarterApplication : Application() {
             modules(
                 listOf(
                     module { androidContext(this@KickstarterApplication) },
-                    androidAppModule
+                    androidAppModule,
+                    appModule(this@KickstarterApplication)
                 )
             )
         }
