@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -57,7 +56,6 @@ import com.example.myapplication.model.Question
 import com.example.myapplication.model.TopCategory
 import com.example.myapplication.screens.interviewCurated.model.InterviewChatItemUiModel
 import com.example.myapplication.theme.kti_accent
-import com.example.myapplication.theme.kti_blue
 import com.example.myapplication.theme.kti_dark_blue
 import com.example.myapplication.theme.kti_divider
 import com.example.myapplication.theme.kti_green
@@ -74,19 +72,11 @@ class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen
     override fun Content() {
         val screenModel: InterviewCuratedScreenModel = getScreenModel()
 
-        val state = screenModel.viewState.collectAsState().value
         val scoreboardState = screenModel.scoreboardState.collectAsState().value
 
-        val chatState = screenModel.viewStateNew.collectAsState().value
+        val chatState = screenModel.screenState.collectAsState().value
 
         LaunchedEffect(null) { screenModel.initQuestions(categories) }
-
-//        InterviewCuratedScreenContent(
-//            screenState = state,
-//            scoreboardState = scoreboardState,
-//            onAddPointClick = { screenModel.questionAnsweredWithPoint() },
-//            onNoPointClick = { screenModel.questionAnsweredNoPoint() },
-//        )
 
         InterviewChatScreenContent(
             scoreboardState = scoreboardState,
@@ -222,43 +212,6 @@ private fun LazyItemScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiM
     }
 }
 
-@Composable
-private fun InterviewCuratedScreenContent(
-    screenState: InterviewCuratedScreenModel.ViewStateSimple,
-    scoreboardState: InterviewCuratedScreenModel.Scoreboard,
-    onAddPointClick: () -> Unit,
-    onNoPointClick: () -> Unit,
-) {
-    KTIColumnWithGradient {
-        KTITopAppBar(
-            title = "Interview Simulation, " + "Score: ${scoreboardState.questionsAnswered}/${scoreboardState.questionsAsked}",
-            iconsSection = { })
-        when (screenState) {
-            InterviewCuratedScreenModel.ViewStateSimple.Idle -> {
-                KTICircularProgressIndicator()
-            }
-
-            InterviewCuratedScreenModel.ViewStateSimple.NoQuestionsLeft -> {
-                KTITextNew("no questions left", fontSize = 16.sp, fontWeight = FontWeight.W700)
-            }
-
-            is InterviewCuratedScreenModel.ViewStateSimple.QuestionDropped -> {
-                Column(Modifier.fillMaxSize()) {
-                    KTIIllustration(imageResource = SharedRes.images.undraw_interview_re_e5jn)
-                    KTIVerticalSpacer(height = 16.dp)
-                    QuestionCard(screenState.question, Modifier.weight(10f))
-                    ControlSection(
-                        addPointClick = onAddPointClick,
-                        noPointClick = onNoPointClick,
-                        modifier = Modifier.weight(1.5f),
-                    )
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun ColumnScope.ControlSection(
     addPointClick: () -> Unit,
