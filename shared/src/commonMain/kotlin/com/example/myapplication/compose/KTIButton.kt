@@ -14,6 +14,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.theme.kti_accent
+import com.example.myapplication.theme.kti_soft_black
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -21,8 +23,8 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun KTIButton(
     label: String,
-    labelColor: Color,
-    backgroundColor: Color,
+    labelColor: Color = kti_soft_black,
+    backgroundColor: Color = kti_accent,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     iconResId: String? = null,
@@ -32,8 +34,9 @@ fun KTIButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor),
         contentPadding = PaddingValues(vertical = 0.dp, horizontal = 12.dp),
-        shape = RoundedCornerShape(8.dp),
-        modifier = modifier
+        shape = RoundedCornerShape(16.dp),
+        modifier = modifier,
+        enabled = enabled,
     ) {
         if (iconResId != null) {
             Icon(
@@ -56,8 +59,8 @@ fun KTIButton(
 @Composable
 fun KTIButton(
     label: String,
-    labelColor: Color,
-    backgroundColor: Color,
+    labelColor: Color = kti_soft_black,
+    backgroundColor: Color = kti_accent,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     iconResId: String? = null,

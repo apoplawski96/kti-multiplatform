@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.example.myapplication.compose.KTICircularProgressIndicator
-import com.example.myapplication.compose.KTIColumnWithGradientColumn
+import com.example.myapplication.compose.KTIColumnWithGradient
 import com.example.myapplication.compose.KTIText
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.compose.KTITopAppBar
@@ -175,7 +175,7 @@ private fun ListScreenContent(
             bottomSheetContent = bottomSheetContent,
             modifier = Modifier.fillMaxSize(),
         ) {
-            KTIColumnWithGradientColumn {
+            KTIColumnWithGradient {
                 KTITopAppBar(
                     title = topBarTitle,
                     iconsSection = {

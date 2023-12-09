@@ -46,8 +46,8 @@ class QuizViewModel(private val questionsRepository: QuestionsRepository) : View
         _displayAnswer.update { false }
     }
 
-    fun getQuestionsCountString() =
-        "${answeredQuestions.size}/${questionsRepository.getAllQuestions().size}"
+//    fun getQuestionsCountString() =
+//        "${answeredQuestions.size}/${questionsRepository.getAllQuestions().size}"
 
     private fun resetQuestionsCollections() {
         answeredQuestions.clear()

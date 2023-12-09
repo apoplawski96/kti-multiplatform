@@ -13,7 +13,7 @@ import com.example.myapplication.theme.kti_grey
 import com.example.myapplication.theme.kti_soft_white
 
 @Composable
-fun KTIColumnWithGradientColumn(
+fun KTIColumnWithGradient(
     content: @Composable () -> Unit
 ) {
     Column(
