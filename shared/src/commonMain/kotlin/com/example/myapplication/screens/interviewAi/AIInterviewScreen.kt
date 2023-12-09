@@ -41,7 +41,7 @@ import com.example.myapplication.model.Role
 import com.example.myapplication.model.schema.AIQuestionSchema
 import com.example.myapplication.theme.KTITheme
 import com.example.myapplication.theme.kti_accent
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_softblack
 import com.example.myapplication.theme.kti_soft_white
 
 internal class AIInterviewScreen(val role: Role) : Screen {
@@ -110,7 +110,7 @@ private fun AIInterviewScreenContent(
                         QuestionCard(aiQuestionSchema = viewState.question, isLoading = isLoading)
                         KTIButton(
                             label = "Generate next",
-                            labelColor = kti_soft_black,
+                            labelColor = kti_softblack,
                             backgroundColor = kti_accent,
                             onClick = onGenerateQuestionClick,
                             modifier = Modifier

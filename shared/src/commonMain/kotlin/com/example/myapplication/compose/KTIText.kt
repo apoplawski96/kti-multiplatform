@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.sp
 import com.appkickstarter.shared.SharedRes
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_softblack
 import com.example.myapplication.theme.kti_text_icons
 import dev.icerock.moko.resources.FontResource
 import dev.icerock.moko.resources.compose.fontFamilyResource
@@ -52,7 +52,7 @@ fun KTITextNew(
     fontSize: TextUnit,
     fontWeight: FontWeight,
     modifier: Modifier = Modifier,
-    color: Color = kti_soft_black,
+    color: Color = kti_softblack,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
     textAlign: TextAlign = TextAlign.Start,

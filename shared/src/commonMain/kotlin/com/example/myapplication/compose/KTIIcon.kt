@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.Dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.myapplication.theme.KTITheme
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_softblack
 import dev.icerock.moko.resources.ImageResource
 
 @Composable
@@ -48,9 +48,10 @@ fun KTIIllustration(
 @Composable
 fun KTIIconButton(
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     icon: @Composable () -> Unit,
 ) {
-    IconButton(onClick = onClick) {
+    IconButton(onClick = onClick, modifier = modifier) {
         icon.invoke()
     }
 }
@@ -77,7 +78,7 @@ fun KTIIconButton(
 
 @Composable
 fun KTIBackIcon() {
-    Icon(Icons.Filled.ArrowBack, "Back Icon", tint = kti_soft_black)
+    Icon(Icons.Filled.ArrowBack, "Back Icon", tint = kti_softblack)
 }
 
 @Composable

@@ -32,8 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.appkickstarter.shared.SharedRes
-import com.example.myapplication.compose.KTIButton
+import com.example.myapplication.compose.KTICircularProgressIndicator
 import com.example.myapplication.compose.KTIColumnWithGradient
+import com.example.myapplication.compose.KTIIcon
+import com.example.myapplication.compose.KTIIconButton
 import com.example.myapplication.compose.KTIIllustration
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.compose.KTITopAppBar
@@ -46,8 +48,10 @@ import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_divider
 import com.example.myapplication.theme.kti_green
 import com.example.myapplication.theme.kti_grey
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_red
 import com.example.myapplication.theme.kti_soft_white
+import com.example.myapplication.theme.kti_softblack
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen {
 
@@ -56,12 +60,15 @@ class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen
         val screenModel: InterviewCuratedScreenModel = getScreenModel()
 
         val state = screenModel.viewState.collectAsState().value
+        val scoreboardState = screenModel.scoreboardState.collectAsState().value
 
         LaunchedEffect(null) { screenModel.initQuestions(categories) }
 
         InterviewCuratedScreenContent(
-            state = state,
-            onDropQuestionClick = { screenModel.dropQuestion() }
+            screenState = state,
+            scoreboardState = scoreboardState,
+            onAddPointClick = { screenModel.questionAnsweredWithPoint() },
+            onNoPointClick = { screenModel.questionAnsweredNoPoint() },
         )
     }
 }
@@ -70,61 +77,79 @@ private val horizontalPadding = 8.dp
 
 @Composable
 private fun InterviewCuratedScreenContent(
-    state: InterviewCuratedScreenModel.ViewState,
-    onDropQuestionClick: () -> Unit,
+    screenState: InterviewCuratedScreenModel.ViewState,
+    scoreboardState: InterviewCuratedScreenModel.Scoreboard,
+    onAddPointClick: () -> Unit,
+    onNoPointClick: () -> Unit,
 ) {
     KTIColumnWithGradient {
-        KTITopAppBar(title = "Interview Simulation", iconsSection = { })
-        when(state) {
-            InterviewCuratedScreenModel.ViewState.Introduction -> {
-                KTITextNew("yoyo yo interview costam", fontSize = 16.sp, fontWeight = FontWeight.W700)
-                KTIButton(label = "Start interview", onClick = onDropQuestionClick)
+        KTITopAppBar(title = "Interview Simulation, " + "Score: ${scoreboardState.questionsAnswered}/${scoreboardState.questionsAsked}", iconsSection = { })
+        when (screenState) {
+            InterviewCuratedScreenModel.ViewState.Idle -> {
+                KTICircularProgressIndicator()
             }
+
             InterviewCuratedScreenModel.ViewState.NoQuestionsLeft -> {
                 KTITextNew("no questions left", fontSize = 16.sp, fontWeight = FontWeight.W700)
             }
+
             is InterviewCuratedScreenModel.ViewState.QuestionDropped -> {
                 Column(Modifier.fillMaxSize()) {
                     KTIIllustration(imageResource = SharedRes.images.undraw_interview_re_e5jn)
                     KTIVerticalSpacer(height = 16.dp)
-                    QuestionCard(state.question, Modifier.weight(10f))
-                    ControlSection(onDropQuestionClick, Modifier.weight(1.5f))
+                    QuestionCard(screenState.question, Modifier.weight(10f))
+                    ControlSection(
+                        addPointClick = onAddPointClick,
+                        noPointClick = onNoPointClick,
+                        modifier = Modifier.weight(1.5f),
+                    )
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun ColumnScope.ControlSection(
-    onDropQuestionClick: () -> Unit,
+    addPointClick: () -> Unit,
+    noPointClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier then Modifier.background(kti_grey)) {
-        KTIButton(label = "Drop question", onClick = onDropQuestionClick, modifier = Modifier.fillMaxWidth())
+    Column(modifier = modifier then Modifier.fillMaxWidth().background(kti_soft_white)) {
+        Divider(color = kti_grey, thickness = 1.5.dp)
+        KTIVerticalSpacer(8.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            KTIIconButton(onClick = addPointClick, modifier = Modifier.weight(1f)) {
+                KTIIcon(imageResource = SharedRes.images.ic_check, tint = kti_green, size = 44.dp)
+            }
+            KTIIconButton(onClick = noPointClick, modifier = Modifier.weight(1f)) {
+                KTIIcon(imageResource = SharedRes.images.ic_cross, tint = kti_red, size = 26.dp)
+            }
+        }
     }
+}
+
+@Composable
+private fun InterviewButton(onClick: () -> Unit, label: String, iconResId: Int) {
+
 }
 
 @Composable
 private fun QuestionCard(
     item: Question,
     modifier: Modifier = Modifier,
-//        markAsAnswered: (Question) -> Unit,
-//        markAsUnanswered: (Question) -> Unit,
 ) {
     val isExpanded = rememberSaveable(item) { mutableStateOf(false) }
     val isAnswered = rememberSaveable(item) { mutableStateOf(false) }
     Column(
         modifier = modifier then Modifier
             .fillMaxWidth()
-            .background(
-//                    if (isAnswered.value) {
-//                        kti_green
-//                    } else {
-//                        kti_soft_white
-//                    }
-                kti_soft_white
-            )
+            .background(kti_soft_white)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -135,7 +160,7 @@ private fun QuestionCard(
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier.weight(8f)
             ) {
-                KTIVerticalSpacer(height = 4.dp)
+                KTIVerticalSpacer(height = 8.dp)
                 QuestionTopSection(question = item)
                 QuestionTitle(isAnswered = isAnswered.value, question = item.question)
                 AnimatedVisibility(visible = isExpanded.value) {
@@ -143,10 +168,11 @@ private fun QuestionCard(
                         KTIVerticalSpacer(height = 2.dp)
                         KTITextNew(
                             text = item.answer,
-                            fontSize = 12.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.W400,
                             modifier = Modifier.padding(horizontal = horizontalPadding + 2.dp),
                         )
+                        KTIVerticalSpacer(height = 16.dp)
                     }
                 }
             }
@@ -166,7 +192,6 @@ private fun QuestionCard(
                     IconButton(onClick = {
                         isAnswered.value = false
                         isExpanded.value = false
-//                            markAsUnanswered.invoke(item)
                     }) {
                         Icon(
                             imageVector = Icons.Filled.Refresh,
@@ -180,15 +205,15 @@ private fun QuestionCard(
         }
         AnimatedVisibility(visible = isExpanded.value || isAnswered.value) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                BottomSection(
-                    isAnswered = isAnswered.value,
-                    markAsAnswered = { question ->
-                        isAnswered.value = true
-                        isExpanded.value = false
-//                            markAsAnswered.invoke(question)
-                    },
-                    item = item,
-                )
+//                BottomSection(
+//                    isAnswered = isAnswered.value,
+//                    markAsAnswered = { question ->
+//                        isAnswered.value = true
+//                        isExpanded.value = false
+////                            markAsAnswered.invoke(question)
+//                    },
+//                    item = item,
+//                )
             }
         }
         Divider(
@@ -204,10 +229,10 @@ private fun QuestionTopSection(
     question: Question,
 ) {
     KTITextNew(
-        text = "${question.topCategory.displayName}, ${question.subCategory?.displayName ?: ""}",
-        fontSize = 10.sp,
+        text = "${question.topCategory.displayName}. ${question.subCategory?.displayName ?: ""}",
+        fontSize = 14.sp,
         fontWeight = FontWeight.W300,
-        color = kti_soft_black.copy(alpha = 0.6f),
+        color = kti_softblack.copy(alpha = 0.8f),
         modifier = Modifier.padding(horizontal = 10.dp),
         lineHeight = 6.sp,
     )
@@ -218,16 +243,16 @@ private fun QuestionTitle(
     isAnswered: Boolean,
     question: String,
 ) {
-    KTIVerticalSpacer(height = if (isAnswered.not()) 2.dp else 0.dp)
+    KTIVerticalSpacer(height = if (isAnswered.not()) 4.dp else 0.dp)
     KTITextNew(
         text = question,
         fontSize = 20.sp,
         fontWeight = if (isAnswered.not()) FontWeight.Medium else FontWeight.Normal,
         modifier = Modifier.padding(horizontal = horizontalPadding + 2.dp),
-        color = if (isAnswered.not()) kti_soft_black else kti_soft_white,
+        color = if (isAnswered.not()) kti_softblack else kti_soft_white,
         lineHeight = 14.sp,
     )
-    KTIVerticalSpacer(height = if (isAnswered.not()) 4.dp else 0.dp)
+    KTIVerticalSpacer(height = if (isAnswered.not()) 8.dp else 0.dp)
 }
 
 @Composable
@@ -274,6 +299,7 @@ private fun MarkAsAnsweredButton(
         }
     }
 }
+
 @Composable
 private fun ToggleAnswerButton(
     shouldDisplayAnswer: Boolean,
@@ -282,7 +308,7 @@ private fun ToggleAnswerButton(
     Icon(
         imageVector = if (shouldDisplayAnswer) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
         contentDescription = null,
-        tint = if (shouldDisplayAnswer) kti_accent else kti_soft_black,
+        tint = if (shouldDisplayAnswer) kti_accent else kti_softblack,
         modifier = Modifier
             .clickableNoRipple { displayAnswerOnClick() }
             .size(18.dp)

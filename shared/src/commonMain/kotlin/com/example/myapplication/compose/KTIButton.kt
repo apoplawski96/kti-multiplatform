@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.theme.kti_accent
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_softblack
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.painterResource
 
@@ -23,7 +23,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun KTIButton(
     label: String,
-    labelColor: Color = kti_soft_black,
+    labelColor: Color = kti_softblack,
     backgroundColor: Color = kti_accent,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -59,7 +59,7 @@ fun KTIButton(
 @Composable
 fun KTIButton(
     label: String,
-    labelColor: Color = kti_soft_black,
+    labelColor: Color = kti_softblack,
     backgroundColor: Color = kti_accent,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,

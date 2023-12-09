@@ -44,10 +44,9 @@ import com.example.myapplication.screens.interviewCurated.InterviewCuratedScreen
 import com.example.myapplication.screens.interviewSetup.model.SelectableCategory
 import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_black_30alpha
-import com.example.myapplication.theme.kti_grayish
 import com.example.myapplication.theme.kti_grey
 import com.example.myapplication.theme.kti_light_grey
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_softblack
 
 object InterviewSetupScreen : Screen {
 
@@ -115,7 +114,7 @@ private fun InterviewSetupScreenContent(
                     println("2137 - isActive: $isActive")
                     KTIButton(
                         label = "Go to interview",
-                        labelColor = if (isActive) kti_soft_black else kti_light_grey,
+                        labelColor = if (isActive) kti_softblack else kti_light_grey,
                         backgroundColor = kti_accent,
                         onClick = onGoToInterviewClick,
                         enabled = isActive

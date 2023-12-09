@@ -12,15 +12,20 @@ class InterviewCuratedScreenModel(
     private val questionsRepository: QuestionsRepository,
 ) : ScreenModel {
 
+    data class Scoreboard(val questionsAnswered: Int, val questionsAsked: Int)
+
     sealed interface ViewState {
-        object Introduction : ViewState
+        object Idle : ViewState
         object NoQuestionsLeft : ViewState
-        data class QuestionDropped(val question: Question, val isAnswered: Boolean) : ViewState
+        data class QuestionDropped(val question: Question) : ViewState
     }
 
     private val questionsBase = mutableListOf<Question>()
 
-    private val _viewState = MutableStateFlow<ViewState>(ViewState.Introduction)
+    private val _scoreboardState = MutableStateFlow(Scoreboard(questionsAnswered = 0, questionsAsked = 0))
+    val scoreboardState = _scoreboardState.asStateFlow()
+
+    private val _viewState = MutableStateFlow<ViewState>(ViewState.Idle)
     val viewState = _viewState.asStateFlow()
 
     fun initQuestions(categories: List<TopCategory>) {
@@ -28,21 +33,35 @@ class InterviewCuratedScreenModel(
 
         questionsBase.clear()
         questionsBase.addAll(questions)
+
+        dropNextQuestion()
     }
 
-    fun setQuestionAnswered() {
-        val currentViewState = viewState.value
-        if (currentViewState is ViewState.QuestionDropped) {
-            _viewState.value = currentViewState.copy(isAnswered = true)
-        }
+    fun questionAnsweredWithPoint() {
+        val currentScore = scoreboardState.value
+        val newScore = currentScore.copy(
+            questionsAsked = currentScore.questionsAsked + 1,
+            questionsAnswered = currentScore.questionsAnswered + 1
+        )
+
+        _scoreboardState.value = newScore
+        dropNextQuestion()
     }
 
-    fun dropQuestion() {
+    fun questionAnsweredNoPoint() {
+        val currentScore = scoreboardState.value
+        val newScore = currentScore.copy(questionsAsked = currentScore.questionsAsked + 1)
+
+        _scoreboardState.value = newScore
+        dropNextQuestion()
+    }
+
+    private fun dropNextQuestion() {
         if (questionsBase.isNotEmpty()) {
             val randomIndex = Random.nextInt(from = 0, until = questionsBase.lastIndex)
             val randomQuestion = questionsBase.removeAt(randomIndex)
 
-            _viewState.value = ViewState.QuestionDropped(randomQuestion, isAnswered = false)
+            _viewState.value = ViewState.QuestionDropped(randomQuestion)
         } else {
 
             _viewState.value = ViewState.NoQuestionsLeft

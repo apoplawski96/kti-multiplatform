@@ -44,7 +44,7 @@ import com.example.myapplication.screens.list.components.ListScreenScoreBar
 import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_divider
 import com.example.myapplication.theme.kti_green
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_softblack
 import com.example.myapplication.theme.kti_soft_white
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -366,7 +366,7 @@ private fun QuestionTopSection(
         text = "${question.topCategory.displayName}, ${question.subCategory?.displayName}",
         fontSize = 10.sp,
         fontWeight = FontWeight.W300,
-        color = kti_soft_black.copy(alpha = 0.6f),
+        color = kti_softblack.copy(alpha = 0.6f),
         modifier = Modifier.padding(horizontal = 10.dp),
         lineHeight = 6.sp,
     )
@@ -383,7 +383,7 @@ private fun QuestionTitle(
         fontSize = 14.sp,
         fontWeight = if (isAnswered.not()) FontWeight.SemiBold else FontWeight.Normal,
         modifier = Modifier.padding(horizontal = horizontalPadding + 2.dp),
-        color = if (isAnswered.not()) kti_soft_black else kti_soft_white,
+        color = if (isAnswered.not()) kti_softblack else kti_soft_white,
         lineHeight = 14.sp,
     )
     KTIVerticalSpacer(height = if (isAnswered.not()) 4.dp else 0.dp)
@@ -397,7 +397,7 @@ private fun ToggleAnswerButton(
     Icon(
         imageVector = if (shouldDisplayAnswer) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
         contentDescription = null,
-        tint = if (shouldDisplayAnswer) kti_accent else kti_soft_black,
+        tint = if (shouldDisplayAnswer) kti_accent else kti_softblack,
         modifier = Modifier
             .clickableNoRipple { displayAnswerOnClick() }
             .size(18.dp)

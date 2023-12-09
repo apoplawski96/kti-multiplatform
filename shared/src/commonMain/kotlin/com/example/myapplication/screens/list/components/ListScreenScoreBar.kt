@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.theme.kti_accent
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_softblack
 import com.example.myapplication.theme.kti_soft_white
 
 @Composable
@@ -28,7 +28,7 @@ fun ListScreenScoreBar(score: Int, total: Int) {
                 text = "Question answered: $score/$total",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.W400,
-                color = kti_soft_black,
+                color = kti_softblack,
                 modifier = Modifier.padding(start = 12.dp, top = 0.dp, bottom = 8.dp, end = 12.dp)
             )
         }

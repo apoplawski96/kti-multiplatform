@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.compose.KTIVerticalSpacer
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_softblack
 import com.example.myapplication.theme.kti_soft_white
 
 @Composable
@@ -74,7 +74,7 @@ private fun BottomSheetTitle(
                 }
             ),
         text = title,
-        color = kti_soft_black.copy(alpha = 0.8f),
+        color = kti_softblack.copy(alpha = 0.8f),
         fontWeight = FontWeight.W300,
         fontSize = 16.sp
     )

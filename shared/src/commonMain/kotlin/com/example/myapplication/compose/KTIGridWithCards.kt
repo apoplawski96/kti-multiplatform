@@ -31,10 +31,9 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_grayish
 import com.example.myapplication.theme.kti_grayish_light
-import com.example.myapplication.theme.kti_soft_black
+import com.example.myapplication.theme.kti_softblack
 import com.example.myapplication.theme.kti_soft_white
 import com.example.myapplication.theme.white
-import com.example.myapplication.model.AndroidSubCategory
 import dev.icerock.moko.resources.ImageResource
 
 data class KTICardItem<T>(
@@ -90,7 +89,7 @@ fun <T> KTICard(
     padding: PaddingValues,
     fontWeight: FontWeight = FontWeight(400),
     backgroundColor: Color = kti_soft_white,
-    textColor: Color = kti_soft_black,
+    textColor: Color = kti_softblack,
 ) {
     Card(
         shape = RoundedCornerShape(size = 8.dp),
@@ -129,7 +128,7 @@ fun <T> KTICardWithIllustration(
     imageResource: ImageResource,
     fontWeight: FontWeight = FontWeight(400),
     backgroundColor: Color = kti_soft_white,
-    textColor: Color = kti_soft_black,
+    textColor: Color = kti_softblack,
     labelSize: TextUnit = 16.sp,
 ) {
     Card(
@@ -240,7 +239,7 @@ fun <T> KTICardSmallWithUnderText(
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight(300),
             fontSize = 12.sp,
-            color = kti_soft_black,
+            color = kti_softblack,
             textAlign = TextAlign.Center
         )
     }
