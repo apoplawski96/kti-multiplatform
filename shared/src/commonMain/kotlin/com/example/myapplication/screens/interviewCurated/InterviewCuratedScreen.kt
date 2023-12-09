@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -27,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,10 +48,13 @@ import com.example.myapplication.compose.clickableNoRipple
 import com.example.myapplication.di.getScreenModel
 import com.example.myapplication.model.Question
 import com.example.myapplication.model.TopCategory
+import com.example.myapplication.screens.interviewCurated.model.InterviewChatItemUiModel
 import com.example.myapplication.theme.kti_accent
+import com.example.myapplication.theme.kti_blue
 import com.example.myapplication.theme.kti_divider
 import com.example.myapplication.theme.kti_green
 import com.example.myapplication.theme.kti_grey
+import com.example.myapplication.theme.kti_light_blue
 import com.example.myapplication.theme.kti_red
 import com.example.myapplication.theme.kti_soft_white
 import com.example.myapplication.theme.kti_softblack
@@ -62,13 +69,22 @@ class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen
         val state = screenModel.viewState.collectAsState().value
         val scoreboardState = screenModel.scoreboardState.collectAsState().value
 
+        val chatState = screenModel.viewStateNew.collectAsState().value
+
         LaunchedEffect(null) { screenModel.initQuestions(categories) }
 
-        InterviewCuratedScreenContent(
-            screenState = state,
+//        InterviewCuratedScreenContent(
+//            screenState = state,
+//            scoreboardState = scoreboardState,
+//            onAddPointClick = { screenModel.questionAnsweredWithPoint() },
+//            onNoPointClick = { screenModel.questionAnsweredNoPoint() },
+//        )
+
+        InterviewChatScreenContent(
             scoreboardState = scoreboardState,
             onAddPointClick = { screenModel.questionAnsweredWithPoint() },
             onNoPointClick = { screenModel.questionAnsweredNoPoint() },
+            screenStateChat = chatState,
         )
     }
 }
@@ -76,24 +92,125 @@ class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen
 private val horizontalPadding = 8.dp
 
 @Composable
-private fun InterviewCuratedScreenContent(
-    screenState: InterviewCuratedScreenModel.ViewState,
+private fun InterviewChatScreenContent(
+    screenStateChat: InterviewCuratedScreenModel.ViewStateChat,
     scoreboardState: InterviewCuratedScreenModel.Scoreboard,
     onAddPointClick: () -> Unit,
     onNoPointClick: () -> Unit,
 ) {
     KTIColumnWithGradient {
-        KTITopAppBar(title = "Interview Simulation, " + "Score: ${scoreboardState.questionsAnswered}/${scoreboardState.questionsAsked}", iconsSection = { })
+        KTITopAppBar(
+            title = "Interview Simulation, " + "Score: ${scoreboardState.questionsAnswered}/${scoreboardState.questionsAsked}",
+            iconsSection = { },
+        )
+        when (screenStateChat) {
+            is InterviewCuratedScreenModel.ViewStateChat.InterviewActive -> {
+                Column(Modifier.fillMaxSize()) {
+                    LazyColumn(modifier = Modifier.weight(10f)) {
+                        items(screenStateChat.chatItems) { chatItem ->
+                            when (chatItem) {
+                                is InterviewChatItemUiModel.Answer -> {
+                                    CandidateBubbleChatItem(chatItem)
+                                }
+
+                                is InterviewChatItemUiModel.InterviewerQuestion -> {
+                                    InterviewerBubbleChatItem(chatItem)
+                                }
+                            }
+                        }
+                    }
+                    ControlSection(
+                        addPointClick = onAddPointClick,
+                        noPointClick = onNoPointClick,
+                        modifier = Modifier.weight(1.5f),
+                    )
+                }
+            }
+
+            is InterviewCuratedScreenModel.ViewStateChat.InterviewFinished -> {
+                KTITextNew("no questions left", fontSize = 16.sp, fontWeight = FontWeight.W700)
+            }
+        }
+    }
+}
+
+private val radius = 16.dp
+
+@Composable
+private fun ColumnScope.InterviewerBubbleChatItem(chatItem: InterviewChatItemUiModel.InterviewerQuestion) {
+    Box(
+        modifier = Modifier
+            .clip(
+                RoundedCornerShape(
+                    topEnd = radius,
+                    topStart = radius,
+                    bottomStart = radius,
+                    bottomEnd = 0.dp,
+                )
+            )
+            .background(kti_blue)
+            .align(Alignment.End)
+    ) {
+        KTITextNew(
+            text = chatItem.question.question,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.W700
+        )
+    }
+}
+
+@Composable
+private fun ColumnScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiModel.Answer) {
+    Box(
+        modifier = Modifier
+            .clip(
+                RoundedCornerShape(
+                    topEnd = radius,
+                    topStart = radius,
+                    bottomStart = 0.dp,
+                    bottomEnd = radius,
+                )
+            )
+            .background(kti_light_blue)
+            .align(Alignment.Start)
+    ) {
+        when (chatItem) {
+            InterviewChatItemUiModel.Answer.BadAnswer -> {
+                KTITextNew(
+                    text = "I don't know. :(",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.W700
+                )
+            }
+
+            InterviewChatItemUiModel.Answer.GoodAnswer -> {
+                KTITextNew(text = "Sure, I know!", fontSize = 16.sp, fontWeight = FontWeight.W700)
+            }
+        }
+    }
+}
+
+@Composable
+private fun InterviewCuratedScreenContent(
+    screenState: InterviewCuratedScreenModel.ViewStateSimple,
+    scoreboardState: InterviewCuratedScreenModel.Scoreboard,
+    onAddPointClick: () -> Unit,
+    onNoPointClick: () -> Unit,
+) {
+    KTIColumnWithGradient {
+        KTITopAppBar(
+            title = "Interview Simulation, " + "Score: ${scoreboardState.questionsAnswered}/${scoreboardState.questionsAsked}",
+            iconsSection = { })
         when (screenState) {
-            InterviewCuratedScreenModel.ViewState.Idle -> {
+            InterviewCuratedScreenModel.ViewStateSimple.Idle -> {
                 KTICircularProgressIndicator()
             }
 
-            InterviewCuratedScreenModel.ViewState.NoQuestionsLeft -> {
+            InterviewCuratedScreenModel.ViewStateSimple.NoQuestionsLeft -> {
                 KTITextNew("no questions left", fontSize = 16.sp, fontWeight = FontWeight.W700)
             }
 
-            is InterviewCuratedScreenModel.ViewState.QuestionDropped -> {
+            is InterviewCuratedScreenModel.ViewStateSimple.QuestionDropped -> {
                 Column(Modifier.fillMaxSize()) {
                     KTIIllustration(imageResource = SharedRes.images.undraw_interview_re_e5jn)
                     KTIVerticalSpacer(height = 16.dp)
