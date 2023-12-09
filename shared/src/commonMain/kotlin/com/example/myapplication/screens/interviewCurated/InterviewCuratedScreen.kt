@@ -41,12 +41,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.appkickstarter.shared.SharedRes
-import com.example.myapplication.compose.KTICircularProgressIndicator
 import com.example.myapplication.compose.KTIColumnWithGradient
 import com.example.myapplication.compose.KTIHorizontalSpacer
 import com.example.myapplication.compose.KTIIcon
 import com.example.myapplication.compose.KTIIconButton
-import com.example.myapplication.compose.KTIIllustration
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.compose.KTITopAppBar
 import com.example.myapplication.compose.KTIVerticalSpacer
@@ -64,7 +62,6 @@ import com.example.myapplication.theme.kti_light_blue
 import com.example.myapplication.theme.kti_red
 import com.example.myapplication.theme.kti_softwhite
 import com.example.myapplication.theme.kti_softblack
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen {
 
@@ -111,11 +108,11 @@ private fun InterviewChatScreenContent(
                         item { KTIVerticalSpacer(height = 8.dp) }
                         itemsIndexed(items = screenStateChat.chatItems, key = { i, it -> "${it.hashCode()}, index: $i" }) { _, chatItem ->
                             when (chatItem) {
-                                is InterviewChatItemUiModel.Answer -> {
+                                is InterviewChatItemUiModel.CandidateMessage -> {
                                     CandidateBubbleChatItem(chatItem)
                                 }
 
-                                is InterviewChatItemUiModel.InterviewerQuestion -> {
+                                is InterviewChatItemUiModel.InterviewerMessage -> {
                                     InterviewerBubbleChatItem(chatItem)
                                 }
                             }
@@ -140,7 +137,7 @@ private fun InterviewChatScreenContent(
 private val radius = 24.dp
 
 @Composable
-private fun LazyItemScope.InterviewerBubbleChatItem(chatItem: InterviewChatItemUiModel.InterviewerQuestion) {
+private fun LazyItemScope.InterviewerBubbleChatItem(chatItem: InterviewChatItemUiModel.InterviewerMessage) {
     Row(
         modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth(),
         horizontalArrangement = Arrangement.End,
@@ -160,18 +157,34 @@ private fun LazyItemScope.InterviewerBubbleChatItem(chatItem: InterviewChatItemU
                 .background(kti_dark_blue)
                 .padding(vertical = 8.dp, horizontal = 12.dp)
         ) {
-            KTITextNew(
-                text = chatItem.question.question,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.W400,
-                color = kti_softwhite,
-            )
+            when(chatItem) {
+                is InterviewChatItemUiModel.InterviewerMessage.OtherMessage -> {
+                    KTITextNew(
+                        text = chatItem.message,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.W400,
+                        color = kti_softwhite,
+                    )
+                }
+                is InterviewChatItemUiModel.InterviewerMessage.QuestionAsked -> {
+                    KTITextNew(
+                        text = chatItem.question.question,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.W400,
+                        color = kti_softwhite,
+                    )
+                }
+
+                InterviewChatItemUiModel.InterviewerMessage.Writing -> {
+                    KTITextNew("...")
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun LazyItemScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiModel.Answer) {
+private fun LazyItemScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiModel.CandidateMessage) {
     Row(
         modifier = Modifier.padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.Start,
@@ -191,7 +204,7 @@ private fun LazyItemScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiM
                 .padding(vertical = 8.dp, horizontal = 12.dp)
         ) {
             when (chatItem) {
-                InterviewChatItemUiModel.Answer.BadAnswer -> {
+                InterviewChatItemUiModel.CandidateMessage.BadAnswer -> {
                     KTITextNew(
                         text = "I don't know. :(",
                         fontSize = 14.sp,
@@ -199,12 +212,16 @@ private fun LazyItemScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiM
                     )
                 }
 
-                InterviewChatItemUiModel.Answer.GoodAnswer -> {
+                InterviewChatItemUiModel.CandidateMessage.GoodAnswer -> {
                     KTITextNew(
                         text = "Sure, I know!",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.W400
                     )
+                }
+
+                InterviewChatItemUiModel.CandidateMessage.Writing -> {
+                    KTITextNew("...")
                 }
             }
         }

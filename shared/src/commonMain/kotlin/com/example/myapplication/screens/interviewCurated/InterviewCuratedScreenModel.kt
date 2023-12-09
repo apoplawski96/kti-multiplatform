@@ -1,15 +1,18 @@
 package com.example.myapplication.screens.interviewCurated
 
 import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.coroutineScope
 import com.example.myapplication._legacy.QuestionsRepository
 import com.example.myapplication.model.Question
 import com.example.myapplication.model.TopCategory
 import com.example.myapplication.screens.interviewCurated.model.InterviewChatItemUiModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-private const val delayValue = 200
+private const val INTERVAL = 800L
 
 class InterviewCuratedScreenModel(
     private val questionsRepository: QuestionsRepository,
@@ -22,14 +25,12 @@ class InterviewCuratedScreenModel(
         object InterviewFinished : ViewStateChat
     }
 
-    private val _viewStateNew =
-        MutableStateFlow<ViewStateChat>(ViewStateChat.InterviewActive(chatItems = emptyList()))
-    val screenState = _viewStateNew.asStateFlow()
-
     private val questionsBase = mutableListOf<Question>()
 
-    private val _scoreboardState =
-        MutableStateFlow(Scoreboard(questionsAnswered = 0, questionsAsked = 0))
+    private val _screenState = MutableStateFlow<ViewStateChat>(ViewStateChat.InterviewActive(chatItems = emptyList()))
+    val screenState = _screenState.asStateFlow()
+
+    private val _scoreboardState = MutableStateFlow(Scoreboard(questionsAnswered = 0, questionsAsked = 0))
     val scoreboardState = _scoreboardState.asStateFlow()
 
     fun initQuestions(categories: List<TopCategory>) {
@@ -38,68 +39,53 @@ class InterviewCuratedScreenModel(
         questionsBase.clear()
         questionsBase.addAll(questions)
 
-        dropNextQuestionNew()
+        coroutineScope.launch {
+            delay(INTERVAL)
+            addChatItemAndUpdateTheState(InterviewChatItemUiModel.InterviewerMessage.OtherMessage("Hello candidate."))
+            delay(INTERVAL)
+            dropNextQuestion()
+        }
     }
 
     fun questionAnsweredWithPoint() {
-        val screenState = screenState.value
         val currentScore = scoreboardState.value
-
-        if (screenState !is ViewStateChat.InterviewActive) return
-
         _scoreboardState.value = currentScore.copy(
             questionsAsked = currentScore.questionsAsked + 1,
             questionsAnswered = currentScore.questionsAnswered + 1
         )
 
-        val updatedChatItems = screenState.chatItems.toMutableList().apply {
-            add(InterviewChatItemUiModel.Answer.GoodAnswer)
-        }
+        addChatItemAndUpdateTheState(InterviewChatItemUiModel.CandidateMessage.GoodAnswer)
 
-        _viewStateNew.value = screenState.copy(updatedChatItems)
-
-        dropNextQuestionNew()
+        dropNextQuestion()
     }
 
     fun questionAnsweredNoPoint() {
-        val screenState = screenState.value
         val currentScore = scoreboardState.value
-
-        if (screenState !is ViewStateChat.InterviewActive) return
-
         _scoreboardState.value = currentScore.copy(questionsAsked = currentScore.questionsAsked + 1)
 
-        val updatedChatItems = addChatItem(
-            item = InterviewChatItemUiModel.Answer.BadAnswer,
-            screenState = screenState,
-        )
+        addChatItemAndUpdateTheState(InterviewChatItemUiModel.CandidateMessage.BadAnswer)
 
-        _viewStateNew.value = screenState.copy(updatedChatItems)
-
-        dropNextQuestionNew()
+        dropNextQuestion()
     }
 
-    private fun dropNextQuestionNew() {
-        val screenState = screenState.value
-        if (questionsBase.isNotEmpty() && screenState is ViewStateChat.InterviewActive) {
+    private fun dropNextQuestion() {
+        if (questionsBase.isNotEmpty()) {
             val randomIndex = Random.nextInt(from = 0, until = questionsBase.lastIndex)
             val randomQuestion = questionsBase.removeAt(randomIndex)
 
-            val updatedChatItems = addChatItem(
-                item = InterviewChatItemUiModel.InterviewerQuestion(randomQuestion),
-                screenState = screenState
-            )
-
-            _viewStateNew.value = ViewStateChat.InterviewActive(updatedChatItems)
+            addChatItemAndUpdateTheState(InterviewChatItemUiModel.InterviewerMessage.QuestionAsked(randomQuestion))
         } else {
-            _viewStateNew.value = ViewStateChat.InterviewFinished
+            _screenState.value = ViewStateChat.InterviewFinished
         }
     }
 
-    private fun addChatItem(
-        item: InterviewChatItemUiModel,
-        screenState: ViewStateChat.InterviewActive
-    ): List<InterviewChatItemUiModel> {
-        return screenState.chatItems.toMutableList().apply { add(item) }
+    private fun addChatItemAndUpdateTheState(item: InterviewChatItemUiModel) {
+        val screenState = screenState.value
+        if (screenState is ViewStateChat.InterviewActive) {
+            val updatedItems = screenState.chatItems.toMutableList().apply { add(item) }
+            _screenState.value = ViewStateChat.InterviewActive(updatedItems)
+        } else {
+            _screenState.value = ViewStateChat.InterviewActive(listOf(item))
+        }
     }
 }

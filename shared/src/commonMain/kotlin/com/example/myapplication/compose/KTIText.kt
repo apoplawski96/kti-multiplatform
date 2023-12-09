@@ -49,8 +49,8 @@ fun KTIText(
 @Composable
 fun KTITextNew(
     text: String,
-    fontSize: TextUnit,
-    fontWeight: FontWeight,
+    fontSize: TextUnit = 14.sp,
+    fontWeight: FontWeight = FontWeight.W400,
     modifier: Modifier = Modifier,
     color: Color = kti_softblack,
     maxLines: Int = Int.MAX_VALUE,
