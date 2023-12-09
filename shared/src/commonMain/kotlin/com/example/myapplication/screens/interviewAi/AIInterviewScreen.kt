@@ -1,4 +1,4 @@
-package com.example.myapplication.screens.interview
+package com.example.myapplication.screens.interviewAi
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background

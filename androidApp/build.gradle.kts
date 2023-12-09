@@ -49,6 +49,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("debug")
             //isDebuggable = true
             isMinifyEnabled = true
             //  R8

@@ -1,4 +1,4 @@
-package com.example.myapplication.screens.interview
+package com.example.myapplication.screens.interviewAi
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.coroutineScope

@@ -42,7 +42,7 @@ import com.example.myapplication.model.Seniority
 import com.example.myapplication.model.SubCategory
 import com.example.myapplication.model.TopCategory
 import com.example.myapplication.screens.categories.CategoriesScreen
-import com.example.myapplication.screens.interview.AIInterviewScreen
+import com.example.myapplication.screens.interviewAi.AIInterviewScreen
 import com.example.myapplication.theme.KTITheme
 
 internal object HomeScreen : Screen {

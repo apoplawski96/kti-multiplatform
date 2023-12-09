@@ -6,7 +6,7 @@ import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import com.example.myapplication.screens.categories.CategoriesScreenModel
 import com.example.myapplication.screens.home.HomeScreenModel
-import com.example.myapplication.screens.interview.AIInterviewScreenModel
+import com.example.myapplication.screens.interviewAi.AIInterviewScreenModel
 import com.example.myapplication.screens.list.QuestionsListScreenModel
 import com.example.myapplication.screens.subcategories.SubCategoriesScreenModel
 import com.example.myapplication.screens.welcome.WelcomeScreenModel

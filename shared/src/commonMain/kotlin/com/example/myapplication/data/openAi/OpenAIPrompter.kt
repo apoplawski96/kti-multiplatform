@@ -14,10 +14,9 @@ class OpenAIPrompter {
 
     private val openAi = OpenAI(
         token = API_KEY,
-        timeout = Timeout(socket = 60.toDuration(DurationUnit.SECONDS))
+        timeout = Timeout(socket = 10.toDuration(DurationUnit.SECONDS))
     )
 
-    @OptIn(BetaOpenAI::class)
     suspend fun executePrompt(prompt: String): String? {
         val chatCompletionRequest = ChatCompletionRequest(
             model = ModelId("gpt-3.5-turbo"),
@@ -30,6 +29,6 @@ class OpenAIPrompter {
         )
         val completion = openAi.chatCompletion(chatCompletionRequest)
 
-        return completion.choices[0].message?.content
+        return completion.choices[0].message.content
     }
 }
