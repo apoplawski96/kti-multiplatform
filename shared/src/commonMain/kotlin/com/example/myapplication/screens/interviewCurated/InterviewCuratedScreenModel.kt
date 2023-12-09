@@ -48,11 +48,12 @@ class InterviewCuratedScreenModel(
     }
 
     fun questionAnsweredWithPoint() {
-        val currentScore = scoreboardState.value
-        _scoreboardState.value = currentScore.copy(
-            questionsAsked = currentScore.questionsAsked + 1,
-            questionsAnswered = currentScore.questionsAnswered + 1
-        )
+        scoreboardState.value.let { scoreboard ->
+            _scoreboardState.value = scoreboard.copy(
+                questionsAsked = scoreboard.questionsAsked + 1,
+                questionsAnswered = scoreboard.questionsAnswered + 1
+            )
+        }
 
         addChatItemAndUpdateTheState(InterviewChatItemUiModel.CandidateMessage.GoodAnswer)
 
@@ -60,8 +61,9 @@ class InterviewCuratedScreenModel(
     }
 
     fun questionAnsweredNoPoint() {
-        val currentScore = scoreboardState.value
-        _scoreboardState.value = currentScore.copy(questionsAsked = currentScore.questionsAsked + 1)
+        scoreboardState.value.let { scoreboard ->
+            _scoreboardState.value = scoreboard.copy(questionsAsked = scoreboard.questionsAsked + 1)
+        }
 
         addChatItemAndUpdateTheState(InterviewChatItemUiModel.CandidateMessage.BadAnswer)
 
