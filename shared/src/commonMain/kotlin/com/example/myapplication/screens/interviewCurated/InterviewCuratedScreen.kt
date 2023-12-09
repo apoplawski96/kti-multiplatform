@@ -70,16 +70,23 @@ class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen
         val screenModel: InterviewCuratedScreenModel = getScreenModel()
 
         val scoreboardState = screenModel.scoreboardState.collectAsState().value
-
         val chatState = screenModel.screenState.collectAsState().value
+        val inputEnabledState = screenModel.inputEnabled.collectAsState().value
 
         LaunchedEffect(null) { screenModel.initQuestions(categories) }
+
+        LaunchedEffect(null) {
+            screenModel.inputEnabled.collect {
+                println("2137 - inputEnabled: $it")
+            }
+        }
 
         InterviewChatScreenContent(
             scoreboardState = scoreboardState,
             onAddPointClick = { screenModel.questionAnsweredWithPoint() },
             onNoPointClick = { screenModel.questionAnsweredNoPoint() },
             screenStateChat = chatState,
+            inputEnabled = inputEnabledState
         )
     }
 }
@@ -92,6 +99,7 @@ private fun InterviewChatScreenContent(
     scoreboardState: InterviewCuratedScreenModel.Scoreboard,
     onAddPointClick: () -> Unit,
     onNoPointClick: () -> Unit,
+    inputEnabled: Boolean,
 ) {
     KTIColumnWithGradient {
         KTITopAppBar(
@@ -119,11 +127,14 @@ private fun InterviewChatScreenContent(
                         }
                         item { KTIVerticalSpacer(height = 8.dp) }
                     }
-                    ControlSection(
-                        addPointClick = onAddPointClick,
-                        noPointClick = onNoPointClick,
-                        modifier = Modifier.weight(1.5f),
-                    )
+                    AnimatedVisibility(visible = inputEnabled) {
+                        ControlSection(
+                            addPointClick = onAddPointClick,
+                            noPointClick = onNoPointClick,
+                            modifier = Modifier.weight(1.5f),
+                            inputEnabled = inputEnabled,
+                        )
+                    }
                 }
             }
 
@@ -233,7 +244,8 @@ private fun LazyItemScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiM
 private fun ColumnScope.ControlSection(
     addPointClick: () -> Unit,
     noPointClick: () -> Unit,
-    modifier: Modifier = Modifier
+    inputEnabled: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier then Modifier.fillMaxWidth().background(kti_softwhite)) {
         Divider(color = kti_grey, thickness = 1.5.dp)
@@ -243,10 +255,10 @@ private fun ColumnScope.ControlSection(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            KTIIconButton(onClick = addPointClick, modifier = Modifier.weight(1f)) {
+            KTIIconButton(onClick = addPointClick, modifier = Modifier.weight(1f), enabled = inputEnabled) {
                 KTIIcon(imageResource = SharedRes.images.ic_check, tint = kti_green, size = 44.dp)
             }
-            KTIIconButton(onClick = noPointClick, modifier = Modifier.weight(1f)) {
+            KTIIconButton(onClick = noPointClick, modifier = Modifier.weight(1f), enabled = inputEnabled) {
                 KTIIcon(imageResource = SharedRes.images.ic_cross, tint = kti_red, size = 26.dp)
             }
         }

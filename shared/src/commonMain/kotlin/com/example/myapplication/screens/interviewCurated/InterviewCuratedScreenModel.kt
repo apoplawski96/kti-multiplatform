@@ -6,19 +6,26 @@ import com.example.myapplication._legacy.QuestionsRepository
 import com.example.myapplication.model.Question
 import com.example.myapplication.model.TopCategory
 import com.example.myapplication.screens.interviewCurated.model.InterviewChatItemUiModel
+import com.example.myapplication.screens.interviewCurated.model.ProgressObject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-private const val INTERVAL = 800L
+private const val interval = 800L
 
 class InterviewCuratedScreenModel(
     private val questionsRepository: QuestionsRepository,
 ) : ScreenModel {
 
-    data class Scoreboard(val questionsAnswered: Int, val questionsAsked: Int)
+    data class Scoreboard(
+        val questionsAnswered: Int,
+        val questionsAsked: Int
+    )
 
     sealed interface ViewStateChat {
         data class InterviewActive(val chatItems: List<InterviewChatItemUiModel>) : ViewStateChat
@@ -33,6 +40,18 @@ class InterviewCuratedScreenModel(
     private val _scoreboardState = MutableStateFlow(Scoreboard(questionsAnswered = 0, questionsAsked = 0))
     val scoreboardState = _scoreboardState.asStateFlow()
 
+    val inputEnabled = screenState.map { screenState ->
+        if (screenState is ViewStateChat.InterviewActive) {
+            screenState.chatItems.lastOrNull() is InterviewChatItemUiModel.CandidateMessage.Writing
+        } else {
+            false
+        }
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.Lazily,
+        initialValue = false
+    )
+
     fun initQuestions(categories: List<TopCategory>) {
         val questions = questionsRepository.getQuestionsForCategories(categories)
 
@@ -40,9 +59,9 @@ class InterviewCuratedScreenModel(
         questionsBase.addAll(questions)
 
         coroutineScope.launch {
-            delay(INTERVAL)
-            addChatItemAndUpdateTheState(InterviewChatItemUiModel.InterviewerMessage.OtherMessage("Hello candidate."))
-            delay(INTERVAL)
+            emitInterviewerProgressObject()
+            delay(interval)
+            emitMessageItemAndUpdateTheState(InterviewChatItemUiModel.InterviewerMessage.OtherMessage("Hello candidate."))
             dropNextQuestion()
         }
     }
@@ -55,9 +74,11 @@ class InterviewCuratedScreenModel(
             )
         }
 
-        addChatItemAndUpdateTheState(InterviewChatItemUiModel.CandidateMessage.GoodAnswer)
-
-        dropNextQuestion()
+        coroutineScope.launch {
+            emitMessageItemAndUpdateTheState(InterviewChatItemUiModel.CandidateMessage.GoodAnswer)
+            emitInterviewerPositiveResponse()
+            dropNextQuestion()
+        }
     }
 
     fun questionAnsweredNoPoint() {
@@ -65,29 +86,64 @@ class InterviewCuratedScreenModel(
             _scoreboardState.value = scoreboard.copy(questionsAsked = scoreboard.questionsAsked + 1)
         }
 
-        addChatItemAndUpdateTheState(InterviewChatItemUiModel.CandidateMessage.BadAnswer)
-
-        dropNextQuestion()
+        coroutineScope.launch {
+            emitMessageItemAndUpdateTheState(InterviewChatItemUiModel.CandidateMessage.BadAnswer)
+            emitInterviewerNegativeResponse()
+            dropNextQuestion()
+        }
     }
 
-    private fun dropNextQuestion() {
+    private suspend fun dropNextQuestion() {
         if (questionsBase.isNotEmpty()) {
             val randomIndex = Random.nextInt(from = 0, until = questionsBase.lastIndex)
             val randomQuestion = questionsBase.removeAt(randomIndex)
 
-            addChatItemAndUpdateTheState(InterviewChatItemUiModel.InterviewerMessage.QuestionAsked(randomQuestion))
+            delay(interval)
+            emitInterviewerProgressObject()
+            delay(interval)
+            emitMessageItemAndUpdateTheState(InterviewChatItemUiModel.InterviewerMessage.QuestionAsked(randomQuestion))
+            delay(interval)
+            emitCandidateProgressObject()
         } else {
             _screenState.value = ViewStateChat.InterviewFinished
         }
     }
 
-    private fun addChatItemAndUpdateTheState(item: InterviewChatItemUiModel) {
+    private fun emitMessageItemAndUpdateTheState(item: InterviewChatItemUiModel) {
         val screenState = screenState.value
         if (screenState is ViewStateChat.InterviewActive) {
-            val updatedItems = screenState.chatItems.toMutableList().apply { add(item) }
+            val updatedItems = screenState.chatItems.toMutableList().apply { add(item) }.filterNot { it is ProgressObject }
             _screenState.value = ViewStateChat.InterviewActive(updatedItems)
-        } else {
-            _screenState.value = ViewStateChat.InterviewActive(listOf(item))
+        }
+    }
+
+    private suspend fun emitInterviewerPositiveResponse() {
+        delay(interval)
+        emitInterviewerProgressObject()
+        delay(interval)
+        emitMessageItemAndUpdateTheState(InterviewChatItemUiModel.InterviewerMessage.OtherMessage("That's a great answer!"))
+    }
+
+    private suspend fun emitInterviewerNegativeResponse() {
+        delay(interval)
+        emitInterviewerProgressObject()
+        delay(interval)
+        emitMessageItemAndUpdateTheState(InterviewChatItemUiModel.InterviewerMessage.OtherMessage("No worries. Let's try with another question."))
+    }
+
+    private fun emitInterviewerProgressObject() {
+        addProgressObjectAndUpdateTheState(InterviewChatItemUiModel.InterviewerMessage.Writing)
+    }
+
+    private fun emitCandidateProgressObject() {
+        addProgressObjectAndUpdateTheState(InterviewChatItemUiModel.CandidateMessage.Writing)
+    }
+
+    private fun addProgressObjectAndUpdateTheState(progressObject: InterviewChatItemUiModel) {
+        val screenState = screenState.value
+        if (screenState is ViewStateChat.InterviewActive) {
+            val updatedItems = screenState.chatItems.toMutableList().apply { add(progressObject) }
+            _screenState.value = ViewStateChat.InterviewActive(updatedItems)
         }
     }
 }

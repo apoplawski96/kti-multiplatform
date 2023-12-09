@@ -111,7 +111,6 @@ private fun InterviewSetupScreenContent(
                     verticalArrangement = Arrangement.Top
                 ) {
                     val isActive = categories.any { it.isSelected }
-                    println("2137 - isActive: $isActive")
                     KTIButton(
                         label = "Go to interview",
                         labelColor = if (isActive) kti_softblack else kti_light_grey,

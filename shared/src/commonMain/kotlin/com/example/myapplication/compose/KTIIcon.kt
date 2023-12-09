@@ -48,10 +48,11 @@ fun KTIIllustration(
 @Composable
 fun KTIIconButton(
     onClick: () -> Unit,
+    enabled: Boolean = true,
     modifier: Modifier = Modifier,
     icon: @Composable () -> Unit,
 ) {
-    IconButton(onClick = onClick, modifier = modifier) {
+    IconButton(onClick = onClick, modifier = modifier, enabled = enabled) {
         icon.invoke()
     }
 }
