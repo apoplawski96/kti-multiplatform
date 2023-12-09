@@ -14,14 +14,14 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_softblack
-import com.example.myapplication.theme.kti_soft_white
+import com.example.myapplication.theme.kti_softwhite
 
 @Composable
 fun ListScreenScoreBar(score: Int, total: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(kti_soft_white.copy(alpha = 0.8f))
+            .background(kti_softwhite.copy(alpha = 0.8f))
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             KTITextNew(

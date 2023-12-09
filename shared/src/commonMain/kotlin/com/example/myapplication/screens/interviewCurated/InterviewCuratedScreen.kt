@@ -1,11 +1,15 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package com.example.myapplication.screens.interviewCurated
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +17,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -38,6 +44,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.appkickstarter.shared.SharedRes
 import com.example.myapplication.compose.KTICircularProgressIndicator
 import com.example.myapplication.compose.KTIColumnWithGradient
+import com.example.myapplication.compose.KTIHorizontalSpacer
 import com.example.myapplication.compose.KTIIcon
 import com.example.myapplication.compose.KTIIconButton
 import com.example.myapplication.compose.KTIIllustration
@@ -51,12 +58,13 @@ import com.example.myapplication.model.TopCategory
 import com.example.myapplication.screens.interviewCurated.model.InterviewChatItemUiModel
 import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_blue
+import com.example.myapplication.theme.kti_dark_blue
 import com.example.myapplication.theme.kti_divider
 import com.example.myapplication.theme.kti_green
 import com.example.myapplication.theme.kti_grey
 import com.example.myapplication.theme.kti_light_blue
 import com.example.myapplication.theme.kti_red
-import com.example.myapplication.theme.kti_soft_white
+import com.example.myapplication.theme.kti_softwhite
 import com.example.myapplication.theme.kti_softblack
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -106,8 +114,12 @@ private fun InterviewChatScreenContent(
         when (screenStateChat) {
             is InterviewCuratedScreenModel.ViewStateChat.InterviewActive -> {
                 Column(Modifier.fillMaxSize()) {
-                    LazyColumn(modifier = Modifier.weight(10f)) {
-                        items(screenStateChat.chatItems) { chatItem ->
+                    LazyColumn(
+                        modifier = Modifier.weight(10f),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                    ) {
+                        item { KTIVerticalSpacer(height = 8.dp) }
+                        itemsIndexed(items = screenStateChat.chatItems, key = { i, it -> "${it.hashCode()}, index: $i" }) { _, chatItem ->
                             when (chatItem) {
                                 is InterviewChatItemUiModel.Answer -> {
                                     CandidateBubbleChatItem(chatItem)
@@ -118,6 +130,7 @@ private fun InterviewChatScreenContent(
                                 }
                             }
                         }
+                        item { KTIVerticalSpacer(height = 8.dp) }
                     }
                     ControlSection(
                         addPointClick = onAddPointClick,
@@ -134,59 +147,78 @@ private fun InterviewChatScreenContent(
     }
 }
 
-private val radius = 16.dp
+private val radius = 24.dp
 
 @Composable
-private fun ColumnScope.InterviewerBubbleChatItem(chatItem: InterviewChatItemUiModel.InterviewerQuestion) {
-    Box(
-        modifier = Modifier
-            .clip(
-                RoundedCornerShape(
-                    topEnd = radius,
-                    topStart = radius,
-                    bottomStart = radius,
-                    bottomEnd = 0.dp,
-                )
-            )
-            .background(kti_blue)
-            .align(Alignment.End)
+private fun LazyItemScope.InterviewerBubbleChatItem(chatItem: InterviewChatItemUiModel.InterviewerQuestion) {
+    Row(
+        modifier = Modifier.padding(vertical = 4.dp).fillMaxWidth(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        KTITextNew(
-            text = chatItem.question.question,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.W700
-        )
+        KTIHorizontalSpacer(44.dp)
+        Box(
+            modifier = Modifier
+                .clip(
+                    RoundedCornerShape(
+                        topEnd = radius,
+                        topStart = radius,
+                        bottomStart = radius,
+                        bottomEnd = 0.dp,
+                    )
+                )
+                .background(kti_dark_blue)
+                .padding(vertical = 8.dp, horizontal = 12.dp)
+        ) {
+            KTITextNew(
+                text = chatItem.question.question,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.W400,
+                color = kti_softwhite,
+            )
+        }
     }
 }
 
 @Composable
-private fun ColumnScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiModel.Answer) {
-    Box(
-        modifier = Modifier
-            .clip(
-                RoundedCornerShape(
-                    topEnd = radius,
-                    topStart = radius,
-                    bottomStart = 0.dp,
-                    bottomEnd = radius,
-                )
-            )
-            .background(kti_light_blue)
-            .align(Alignment.Start)
+private fun LazyItemScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiModel.Answer) {
+    Row(
+        modifier = Modifier.padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        when (chatItem) {
-            InterviewChatItemUiModel.Answer.BadAnswer -> {
-                KTITextNew(
-                    text = "I don't know. :(",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.W700
+        Box(
+            modifier = Modifier
+                .clip(
+                    RoundedCornerShape(
+                        topEnd = radius,
+                        topStart = radius,
+                        bottomStart = 0.dp,
+                        bottomEnd = radius,
+                    )
                 )
-            }
+                .background(kti_light_blue)
+                .padding(vertical = 8.dp, horizontal = 12.dp)
+        ) {
+            when (chatItem) {
+                InterviewChatItemUiModel.Answer.BadAnswer -> {
+                    KTITextNew(
+                        text = "I don't know. :(",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.W400
+                    )
+                }
 
-            InterviewChatItemUiModel.Answer.GoodAnswer -> {
-                KTITextNew(text = "Sure, I know!", fontSize = 16.sp, fontWeight = FontWeight.W700)
+                InterviewChatItemUiModel.Answer.GoodAnswer -> {
+                    KTITextNew(
+                        text = "Sure, I know!",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.W400
+                    )
+                }
             }
         }
+        KTIHorizontalSpacer(44.dp)
     }
 }
 
@@ -233,7 +265,7 @@ private fun ColumnScope.ControlSection(
     noPointClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier then Modifier.fillMaxWidth().background(kti_soft_white)) {
+    Column(modifier = modifier then Modifier.fillMaxWidth().background(kti_softwhite)) {
         Divider(color = kti_grey, thickness = 1.5.dp)
         KTIVerticalSpacer(8.dp)
         Row(
@@ -266,7 +298,7 @@ private fun QuestionCard(
     Column(
         modifier = modifier then Modifier
             .fillMaxWidth()
-            .background(kti_soft_white)
+            .background(kti_softwhite)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -313,7 +345,7 @@ private fun QuestionCard(
                         Icon(
                             imageVector = Icons.Filled.Refresh,
                             contentDescription = "Reopen question",
-                            tint = kti_soft_white,
+                            tint = kti_softwhite,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -366,7 +398,7 @@ private fun QuestionTitle(
         fontSize = 20.sp,
         fontWeight = if (isAnswered.not()) FontWeight.Medium else FontWeight.Normal,
         modifier = Modifier.padding(horizontal = horizontalPadding + 2.dp),
-        color = if (isAnswered.not()) kti_softblack else kti_soft_white,
+        color = if (isAnswered.not()) kti_softblack else kti_softwhite,
         lineHeight = 14.sp,
     )
     KTIVerticalSpacer(height = if (isAnswered.not()) 8.dp else 0.dp)

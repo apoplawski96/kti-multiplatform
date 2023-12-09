@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import com.example.myapplication.theme.kti_background_grey
 import com.example.myapplication.theme.kti_grey
-import com.example.myapplication.theme.kti_soft_white
+import com.example.myapplication.theme.kti_softwhite
 
 @Composable
 fun KTIColumnWithGradient(
@@ -41,6 +41,6 @@ fun KTIBoxWithGradientBackground(
 }
 
 private fun getGradientBrush() = Brush.verticalGradient(
-    0.0f to kti_soft_white,
+    0.0f to kti_softwhite,
     1.0f to kti_grey
 )

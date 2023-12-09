@@ -42,7 +42,7 @@ import com.example.myapplication.model.schema.AIQuestionSchema
 import com.example.myapplication.theme.KTITheme
 import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_softblack
-import com.example.myapplication.theme.kti_soft_white
+import com.example.myapplication.theme.kti_softwhite
 
 internal class AIInterviewScreen(val role: Role) : Screen {
 
@@ -76,7 +76,7 @@ private fun AIInterviewScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(kti_soft_white)
+            .background(kti_softwhite)
     ) {
         KTITopAppBar(title = "AI Interview")
         KTIVerticalSpacer(height = 8.dp)
@@ -133,7 +133,7 @@ private fun QuestionCard(
 
     Card(
         shape = RoundedCornerShape(size = 12.dp),
-        backgroundColor = kti_soft_white,
+        backgroundColor = kti_softwhite,
 //        border = BorderStroke(width = 0.5.dp, color = kti_grayish_light.copy(alpha = 0.2f)),
         modifier = Modifier
             .clickableNoRipple { }

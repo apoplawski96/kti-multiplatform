@@ -32,7 +32,7 @@ import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_grayish
 import com.example.myapplication.theme.kti_grayish_light
 import com.example.myapplication.theme.kti_softblack
-import com.example.myapplication.theme.kti_soft_white
+import com.example.myapplication.theme.kti_softwhite
 import com.example.myapplication.theme.white
 import dev.icerock.moko.resources.ImageResource
 
@@ -68,7 +68,7 @@ fun <T> KTIGridWithCards(
                     item = item.applyColor(index),
                     onClick = onClick,
                     padding = PaddingValues(all = 4.dp),
-                    textColor = kti_soft_white,
+                    textColor = kti_softwhite,
                     fontWeight = FontWeight.W500
                 )
             }
@@ -88,7 +88,7 @@ fun <T> KTICard(
     onClick: (T) -> Unit,
     padding: PaddingValues,
     fontWeight: FontWeight = FontWeight(400),
-    backgroundColor: Color = kti_soft_white,
+    backgroundColor: Color = kti_softwhite,
     textColor: Color = kti_softblack,
 ) {
     Card(
@@ -127,7 +127,7 @@ fun <T> KTICardWithIllustration(
     onClick: (T) -> Unit,
     imageResource: ImageResource,
     fontWeight: FontWeight = FontWeight(400),
-    backgroundColor: Color = kti_soft_white,
+    backgroundColor: Color = kti_softwhite,
     textColor: Color = kti_softblack,
     labelSize: TextUnit = 16.sp,
 ) {
@@ -182,7 +182,7 @@ fun <T> KTICardSmall(
 ) {
     Card(
         shape = RoundedCornerShape(size = 12.dp),
-        backgroundColor = item.cardColor ?: kti_soft_white,
+        backgroundColor = item.cardColor ?: kti_softwhite,
         modifier = Modifier
             .clickableNoRipple { onClick.invoke(item.value) }
             .padding(PaddingValues(end = 8.dp, top = 8.dp, bottom = 8.dp))
@@ -222,7 +222,7 @@ fun <T> KTICardSmallWithUnderText(
     ) {
         Card(
             shape = RoundedCornerShape(size = 12.dp),
-            backgroundColor = item.cardColor ?: kti_soft_white,
+            backgroundColor = item.cardColor ?: kti_softwhite,
 //        border = BorderStroke(width = 0.5.dp, color = kti_grayish_light.copy(alpha = 0.2f)),
             modifier = Modifier
                 .clickableNoRipple { onClick.invoke(item.value) }

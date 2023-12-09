@@ -45,7 +45,7 @@ import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_divider
 import com.example.myapplication.theme.kti_green
 import com.example.myapplication.theme.kti_softblack
-import com.example.myapplication.theme.kti_soft_white
+import com.example.myapplication.theme.kti_softwhite
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -168,7 +168,7 @@ private fun ListScreenContent(
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxSize()
-            .background(kti_soft_white),
+            .background(kti_softwhite),
     ) {
         KTIModalBottomSheetLayout(
             sheetState = bottomSheetState,
@@ -281,7 +281,7 @@ private fun QuestionItem(
                 if (isAnswered.value) {
                     kti_green
                 } else {
-                    kti_soft_white
+                    kti_softwhite
                 }
             )
     ) {
@@ -330,7 +330,7 @@ private fun QuestionItem(
                         Icon(
                             imageVector = Icons.Filled.Refresh,
                             contentDescription = "Reopen question",
-                            tint = kti_soft_white,
+                            tint = kti_softwhite,
                             modifier = Modifier.size(18.dp)
                         )
                     }
@@ -383,7 +383,7 @@ private fun QuestionTitle(
         fontSize = 14.sp,
         fontWeight = if (isAnswered.not()) FontWeight.SemiBold else FontWeight.Normal,
         modifier = Modifier.padding(horizontal = horizontalPadding + 2.dp),
-        color = if (isAnswered.not()) kti_softblack else kti_soft_white,
+        color = if (isAnswered.not()) kti_softblack else kti_softwhite,
         lineHeight = 14.sp,
     )
     KTIVerticalSpacer(height = if (isAnswered.not()) 4.dp else 0.dp)

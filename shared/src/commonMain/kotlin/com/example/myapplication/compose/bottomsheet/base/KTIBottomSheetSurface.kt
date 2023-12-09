@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.compose.KTIVerticalSpacer
 import com.example.myapplication.theme.kti_softblack
-import com.example.myapplication.theme.kti_soft_white
+import com.example.myapplication.theme.kti_softwhite
 
 @Composable
 fun KTIBottomSheetSurface(
@@ -32,7 +32,7 @@ fun KTIBottomSheetSurface(
 ) {
     Surface(
         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        color = kti_soft_white,
+        color = kti_softwhite,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             BottomSheetNotch()
