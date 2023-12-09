@@ -26,6 +26,7 @@ fun KTIButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     iconResId: String? = null,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
@@ -41,7 +42,13 @@ fun KTIButton(
                 tint = labelColor
             )
         }
-        KTITextNew(text = label, fontSize = 14.sp, fontWeight = FontWeight.W400, color = labelColor, modifier = Modifier.padding(vertical = 16.dp))
+        KTITextNew(
+            text = label,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.W400,
+            color = labelColor,
+            modifier = Modifier.padding(vertical = 16.dp)
+        )
     }
 }
 
@@ -55,6 +62,7 @@ fun KTIButton(
     modifier: Modifier = Modifier,
     iconResId: String? = null,
     isLoading: Boolean = false,
+    enabled: Boolean = true,
 ) {
     Button(
         onClick = onClick,
@@ -72,7 +80,9 @@ fun KTIButton(
             )
         }
         KTITextNew(text = label, fontSize = 12.sp, fontWeight = FontWeight.W400, color = labelColor)
-        if (isLoading) { KTICircularProgressIndicator() }
+        if (isLoading) {
+            KTICircularProgressIndicator()
+        }
     }
 }
 

@@ -1,11 +1,12 @@
 package com.example.myapplication.screens.interviewSetup
 
+import cafe.adriel.voyager.core.model.ScreenModel
 import com.example.myapplication.feature.categories.data.CategoriesRepository
 import com.example.myapplication.screens.interviewSetup.model.SelectableCategory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class InterviewSetupScreenModel(private val categoriesRepository: CategoriesRepository) {
+class InterviewSetupScreenModel(categoriesRepository: CategoriesRepository) : ScreenModel {
 
     private val _viewState = MutableStateFlow<List<SelectableCategory>>(emptyList())
     val viewState = _viewState.asStateFlow()
