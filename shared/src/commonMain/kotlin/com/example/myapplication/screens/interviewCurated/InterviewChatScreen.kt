@@ -1,9 +1,5 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.example.myapplication.screens.interviewCurated
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,7 +39,6 @@ import com.example.myapplication.compose.KTIColumnWithGradient
 import com.example.myapplication.compose.KTIHorizontalSpacer
 import com.example.myapplication.compose.KTIIcon
 import com.example.myapplication.compose.KTITextNew
-import com.example.myapplication.compose.KTITopAppBar
 import com.example.myapplication.compose.KTIVerticalSpacer
 import com.example.myapplication.compose.LoadingAnimation
 import com.example.myapplication.di.getScreenModel
@@ -281,41 +277,38 @@ private fun ColumnScope.ControlSection(
     isAnswerExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier then Modifier.fillMaxWidth().background(kti_softwhite)) {
+    Column(modifier = modifier then Modifier.fillMaxWidth().background(Color.Transparent)) {
         Divider(color = kti_grey, thickness = 1.5.dp)
-        AnimatedVisibility(visible = inputEnabled) {
-            Row(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                KTIButtonShared(
-                    label = "I knew it!",
-                    onClick = addPointClick,
-                    icon = SharedRes.images.check_new,
-                    iconColor = kti_green,
-                    enabled = inputEnabled,
-                    backgroundColor = kti_softwhite,
-                )
-                KTIButtonShared(
-                    label = "I was confused :(",
-                    onClick = noPointClick,
-                    icon = SharedRes.images.cross_new,
-                    iconColor = kti_red,
-                    enabled = inputEnabled,
-                    backgroundColor = kti_softwhite,
-                )
-                KTIButtonShared(
-                    label = if (isAnswerExpanded.not()) "Show answer" else "Hide answer",
-                    onClick = showAnswerClick,
-                    icon = if (isAnswerExpanded.not()) SharedRes.images.arrow_up else SharedRes.images.arrow_down,
-                    iconColor = if (isAnswerExpanded.not()) kti_softblack else kti_softwhite,
-                    enabled = inputEnabled,
-                    backgroundColor = if (isAnswerExpanded.not()) kti_softwhite else kti_accent,
-                    labelColor = if (isAnswerExpanded.not()) kti_softblack else kti_softwhite
-                )
-            }
+        Row(
+            modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            KTIButtonShared(
+                label = "I knew it!",
+                onClick = addPointClick,
+                icon = SharedRes.images.check_new,
+                iconColor = kti_green,
+                enabled = inputEnabled,
+                backgroundColor = kti_softwhite,
+            )
+            KTIButtonShared(
+                label = "I was confused :(",
+                onClick = noPointClick,
+                icon = SharedRes.images.cross_new,
+                iconColor = kti_red,
+                enabled = inputEnabled,
+                backgroundColor = kti_softwhite,
+            )
+            KTIButtonShared(
+                label = if (isAnswerExpanded.not()) "Show answer" else "Hide answer",
+                onClick = showAnswerClick,
+                icon = if (isAnswerExpanded.not()) SharedRes.images.arrow_up else SharedRes.images.arrow_down,
+                iconColor = if (isAnswerExpanded.not()) kti_softblack else kti_softwhite,
+                enabled = inputEnabled,
+                backgroundColor = if (isAnswerExpanded.not()) kti_softwhite else kti_accent,
+                labelColor = if (isAnswerExpanded.not()) kti_softblack else kti_softwhite
+            )
         }
-
     }
 }
