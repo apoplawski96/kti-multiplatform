@@ -11,25 +11,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -47,17 +39,16 @@ import com.appkickstarter.shared.SharedRes
 import com.example.myapplication.compose.KTIButtonShared
 import com.example.myapplication.compose.KTIColumnWithGradient
 import com.example.myapplication.compose.KTIHorizontalSpacer
+import com.example.myapplication.compose.KTIIcon
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.compose.KTITopAppBar
 import com.example.myapplication.compose.KTIVerticalSpacer
-import com.example.myapplication.compose.clickableNoRipple
 import com.example.myapplication.di.getScreenModel
 import com.example.myapplication.model.Question
 import com.example.myapplication.model.TopCategory
 import com.example.myapplication.screens.interviewCurated.model.InterviewChatItemUiModel
 import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_dark_blue
-import com.example.myapplication.theme.kti_divider
 import com.example.myapplication.theme.kti_green
 import com.example.myapplication.theme.kti_grey
 import com.example.myapplication.theme.kti_light_blue
@@ -161,8 +152,12 @@ private fun InterviewChatScreenContent(
                                     )
                                     .background(kti_softwhite)
                                     .padding(vertical = 8.dp, horizontal = 12.dp)
+                                    .verticalScroll(rememberScrollState())
                             ) {
-                                KTITextNew(currentQuestion?.answer ?: "Current question is null")
+                                KTIVerticalSpacer(4.dp)
+                                KTIIcon(SharedRes.images.ic_info, size = 16.dp)
+                                KTIVerticalSpacer(4.dp)
+                                KTITextNew(text = currentQuestion?.answer ?: "Current question is null")
                             }
                         }
                     }
@@ -316,194 +311,14 @@ private fun ColumnScope.ControlSection(
                 KTIButtonShared(
                     label = if (isAnswerExpanded.not()) "Show answer" else "Hide answer",
                     onClick = showAnswerClick,
-                    icon = SharedRes.images.arrow_up,
-                    iconColor = kti_softblack,
+                    icon = if (isAnswerExpanded.not()) SharedRes.images.arrow_up else SharedRes.images.arrow_down,
+                    iconColor = if (isAnswerExpanded.not()) kti_softblack else kti_softwhite,
                     enabled = inputEnabled,
-                    backgroundColor = kti_softwhite,
+                    backgroundColor = if (isAnswerExpanded.not()) kti_softwhite else kti_accent,
+                    labelColor = if (isAnswerExpanded.not()) kti_softblack else kti_softwhite
                 )
             }
         }
 
     }
-}
-
-@Composable
-private fun InterviewButton(onClick: () -> Unit, label: String, iconResId: Int) {
-
-}
-
-@Composable
-private fun QuestionCard(
-    item: Question,
-    modifier: Modifier = Modifier,
-) {
-    val isExpanded = rememberSaveable(item) { mutableStateOf(false) }
-    val isAnswered = rememberSaveable(item) { mutableStateOf(false) }
-    Column(
-        modifier = modifier then Modifier
-            .fillMaxWidth()
-            .background(kti_softwhite)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.Top
-        ) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier.weight(8f)
-            ) {
-                KTIVerticalSpacer(height = 8.dp)
-                QuestionTopSection(question = item)
-                QuestionTitle(isAnswered = isAnswered.value, question = item.question)
-                AnimatedVisibility(visible = isExpanded.value) {
-                    Column {
-                        KTIVerticalSpacer(height = 2.dp)
-                        KTITextNew(
-                            text = item.answer,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.W400,
-                            modifier = Modifier.padding(horizontal = horizontalPadding + 2.dp),
-                        )
-                        KTIVerticalSpacer(height = 16.dp)
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1.5f)
-                    .defaultMinSize(minHeight = 52.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                if (isAnswered.value.not()) {
-                    ToggleAnswerButton(
-                        shouldDisplayAnswer = isExpanded.value,
-                        displayAnswerOnClick = { isExpanded.value = !isExpanded.value },
-                    )
-                } else {
-                    IconButton(onClick = {
-                        isAnswered.value = false
-                        isExpanded.value = false
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Refresh,
-                            contentDescription = "Reopen question",
-                            tint = kti_softwhite,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                }
-            }
-        }
-        AnimatedVisibility(visible = isExpanded.value || isAnswered.value) {
-            Column(modifier = Modifier.fillMaxWidth()) {
-//                BottomSection(
-//                    isAnswered = isAnswered.value,
-//                    markAsAnswered = { question ->
-//                        isAnswered.value = true
-//                        isExpanded.value = false
-////                            markAsAnswered.invoke(question)
-//                    },
-//                    item = item,
-//                )
-            }
-        }
-        Divider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 1.dp,
-            color = kti_divider.copy(alpha = 0.4f)
-        )
-    }
-}
-
-@Composable
-private fun QuestionTopSection(
-    question: Question,
-) {
-    KTITextNew(
-        text = "${question.topCategory.displayName}. ${question.subCategory?.displayName ?: ""}",
-        fontSize = 14.sp,
-        fontWeight = FontWeight.W300,
-        color = kti_softblack.copy(alpha = 0.8f),
-        modifier = Modifier.padding(horizontal = 10.dp),
-        lineHeight = 6.sp,
-    )
-}
-
-@Composable
-private fun QuestionTitle(
-    isAnswered: Boolean,
-    question: String,
-) {
-    KTIVerticalSpacer(height = if (isAnswered.not()) 4.dp else 0.dp)
-    KTITextNew(
-        text = question,
-        fontSize = 20.sp,
-        fontWeight = if (isAnswered.not()) FontWeight.Medium else FontWeight.Normal,
-        modifier = Modifier.padding(horizontal = horizontalPadding + 2.dp),
-        color = if (isAnswered.not()) kti_softblack else kti_softwhite,
-        lineHeight = 14.sp,
-    )
-    KTIVerticalSpacer(height = if (isAnswered.not()) 8.dp else 0.dp)
-}
-
-@Composable
-private fun BottomSection(
-    isAnswered: Boolean,
-    markAsAnswered: (Question) -> Unit,
-    item: Question,
-) {
-    if (isAnswered.not()) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = horizontalPadding + 8.dp,
-                    end = horizontalPadding + 8.dp,
-                    top = 12.dp,
-                    bottom = 2.dp
-                )
-        ) {
-            MarkAsAnsweredButton(
-                toggleAsAnswered = { markAsAnswered(item) },
-            )
-        }
-    }
-}
-
-@Composable
-private fun MarkAsAnsweredButton(
-    toggleAsAnswered: () -> Unit,
-) {
-    Row(
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        TextButton(onClick = toggleAsAnswered) {
-            KTITextNew(
-                text = "Mark as answered",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W600,
-                color = kti_green,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ToggleAnswerButton(
-    shouldDisplayAnswer: Boolean,
-    displayAnswerOnClick: () -> Unit,
-) {
-    Icon(
-        imageVector = if (shouldDisplayAnswer) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-        contentDescription = null,
-        tint = if (shouldDisplayAnswer) kti_accent else kti_softblack,
-        modifier = Modifier
-            .clickableNoRipple { displayAnswerOnClick() }
-            .size(18.dp)
-    )
 }

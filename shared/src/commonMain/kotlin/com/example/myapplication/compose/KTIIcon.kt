@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.myapplication.theme.KTITheme
@@ -20,7 +21,7 @@ import dev.icerock.moko.resources.ImageResource
 fun KTIIcon(
     imageResource: ImageResource,
     modifier: Modifier = Modifier,
-    size: Dp = Dp.Unspecified,
+    size: Dp = 24.dp,
     tint: Color = KTITheme.colors.textMain,
     contentDescription: String? = null,
 ) {
