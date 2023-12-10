@@ -79,8 +79,8 @@ kotlin {
                 api(libs.touchlab.kermit)
                 implementation(libs.kotlinx.serialization.json)
 
-                implementation(platform("com.aallam.openai:openai-client-bom:3.6.1"))
-                implementation("com.aallam.openai:openai-client")
+//                implementation(platform("com.aallam.openai:openai-client-bom:3.6.1"))
+//                implementation("com.aallam.openai:openai-client")
 
                 implementation(libs.bundles.ktor.common)
                 implementation(libs.touchlab.stately)

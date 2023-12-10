@@ -45,7 +45,8 @@ class AIInterviewQuestionsPrompter(
         if (promptResponse.isNullOrEmpty() || promptResponse.isBlank()) {
             ResultJson.Error
         } else {
-            val question: AIQuestionSchema = Json.decodeFromString(promptResponse)
+//            val question: AIQuestionSchema = Json.decodeFromString(promptResponse)
+            val question = AIQuestionSchema("", "")
 
             questionsDatabase.insertQuestions(listOf(question))
             inMemoryQuestionsCache.add(question)

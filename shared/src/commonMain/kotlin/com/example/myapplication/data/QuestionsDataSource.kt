@@ -75,6 +75,8 @@ class QuestionsDataSource(private val jsonFileReader: JsonFileReader) {
 
     private fun decodeQuestionsFromFile(fileName: String): List<QuestionSchema> {
         val jsonFileContent = jsonFileReader.readJsonFile(fileName)
-        return Json.decodeFromString(jsonFileContent)
+
+//        return Json.decodeFromString(jsonFileContent)
+        return listOf()
     }
 }

@@ -1,23 +1,26 @@
 package com.example.myapplication.screens.interviewSetup
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -29,6 +32,7 @@ import com.appkickstarter.shared.SharedRes
 import com.example.myapplication.compose.GridVariant
 import com.example.myapplication.compose.KTIBoxWithGradientBackground
 import com.example.myapplication.compose.KTIButton
+import com.example.myapplication.compose.KTICardContainer
 import com.example.myapplication.compose.KTICardItem
 import com.example.myapplication.compose.KTICircularProgressIndicator
 import com.example.myapplication.compose.KTIGridWithCards
@@ -36,14 +40,13 @@ import com.example.myapplication.compose.KTIIllustration
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.compose.KTITopAppBar
 import com.example.myapplication.compose.KTIVerticalSpacer
-import com.example.myapplication.compose.clickableNoRipple
 import com.example.myapplication.di.getScreenModel
 import com.example.myapplication.model.TopCategory
 import com.example.myapplication.screens.categories.CategoriesScreenModel
 import com.example.myapplication.screens.interviewCurated.InterviewChatScreen
 import com.example.myapplication.screens.interviewSetup.model.SelectableCategory
+import com.example.myapplication.theme.KTITheme
 import com.example.myapplication.theme.kti_accent
-import com.example.myapplication.theme.kti_black_30alpha
 import com.example.myapplication.theme.kti_grey
 import com.example.myapplication.theme.kti_light_grey
 import com.example.myapplication.theme.kti_softblack
@@ -82,17 +85,18 @@ private fun InterviewSetupScreenContent(
 ) {
     KTIBoxWithGradientBackground {
         Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize().background(KTITheme.colors.backgroundSurface),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            KTITopAppBar(title = "Select categories")
+            KTITopAppBar(title = "Select categories", iconsSection = { })
             Column(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(1),
                     state = lazyGridState,
-                    modifier = Modifier.weight(10f)
+                    modifier = Modifier.weight(10f),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     item { KTIVerticalSpacer(height = 8.dp) }
                     item { KTIVerticalSpacer(height = 8.dp) }
@@ -103,6 +107,7 @@ private fun InterviewSetupScreenContent(
                                 onCategoryClick = onCategoryClick
                             )
                         }
+                        item { KTIVerticalSpacer(height = 12.dp) }
                     }
                 }
                 Column(
@@ -130,21 +135,47 @@ private fun SelectableCategoryCard(
     onCategoryClick: (SelectableCategory) -> Unit,
 ) {
     val borderColor = if (item.isSelected) kti_accent else kti_grey
-    Card(
-        shape = RoundedCornerShape(size = 8.dp),
-        backgroundColor = Color.Transparent,
-        border = BorderStroke(width = 1.5.dp, color = borderColor),
-        modifier = Modifier
-            .clickableNoRipple { onCategoryClick.invoke(item) }
-            .padding(4.dp)
-            .heightIn(min = 96.dp)
-            .fillMaxWidth(),
-        elevation = 2.dp
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Bottom,
+//    Card(
+//        shape = RoundedCornerShape(size = 16.dp),
+//        backgroundColor = Color.Transparent,
+//        border = BorderStroke(width = 2.dp, color = borderColor),
+//        modifier = Modifier
+//            .clickableNoRipple { onCategoryClick.invoke(item) }
+//            .heightIn(min = 96.dp)
+//            .fillMaxWidth()
+//            .padding(4.dp),
+//        elevation = 0.dp
+//    ) {
+//        Row(
+//            modifier = Modifier.padding(12.dp).fillMaxSize(),
+//        ) {
+//            KTITextNew(
+//                text = item.category.displayName,
+//                maxLines = 2,
+//                overflow = TextOverflow.Ellipsis,
+//                fontWeight = FontWeight.Normal,
+//                fontSize = 16.sp,
+//                color = kti_softblack,
+//                modifier = Modifier.weight(8f).align(Alignment.Bottom)
+//            )
+//            Box(Modifier.weight(1.5f).align(Alignment.Top)) {
+//                Box(
+//                    modifier = Modifier
+//                        .size(24.dp)
+//                        .clip(CircleShape)
+//                        .border(
+//                            width = if (item.isSelected) 8.dp else 1.dp,
+//                            color = if (item.isSelected) kti_accent else kti_grey
+//                        )
+//                        .align(Alignment.TopCenter)
+//                )
+//            }
+//        }
+//    }
+
+    KTICardContainer(onClick = { onCategoryClick.invoke(item) }, borderColor = borderColor, height = 92.dp) {
+        Row(
+            modifier = Modifier.padding(12.dp).fillMaxSize(),
         ) {
             KTITextNew(
                 text = item.category.displayName,
@@ -152,8 +183,21 @@ private fun SelectableCategoryCard(
                 overflow = TextOverflow.Ellipsis,
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
-                color = kti_black_30alpha
+                color = kti_softblack,
+                modifier = Modifier.weight(8f).align(Alignment.Bottom)
             )
+            Box(Modifier.weight(1.5f).align(Alignment.Top)) {
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .border(
+                            width = if (item.isSelected) 8.dp else 1.dp,
+                            color = if (item.isSelected) kti_accent else kti_grey
+                        )
+                        .align(Alignment.TopCenter)
+                )
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.myapplication.compose
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -270,5 +272,27 @@ private fun AllCard(onClick: () -> Unit) {
                 color = kti_accent
             )
         }
+    }
+}
+
+@Composable
+fun KTICardContainer(
+    onClick: () -> Unit = { },
+    backgroundColor: Color = kti_softwhite,
+    borderColor: Color = Color.Transparent,
+    height: Dp = cardMinHeight,
+    content: @Composable () -> Unit
+) {
+    Card(
+        shape = RoundedCornerShape(size = 16.dp),
+        backgroundColor = backgroundColor,
+        elevation = 2.dp,
+        border = BorderStroke(1.dp, color = borderColor),
+        modifier = Modifier
+            .clickable { onClick.invoke() }
+            .fillMaxWidth()
+            .heightIn(height),
+    ) {
+        content.invoke()
     }
 }
