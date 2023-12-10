@@ -108,6 +108,9 @@ kotlin {
                 // Compose
                 api("io.insert-koin:koin-androidx-compose:$koin_android_compose_version")
 
+//                implementation ("com.google.accompanist:accompanist-systemuicontroller:0.33.2-alpha")
+
+
 //                implementation(libs.androidx.lifecycle.viewmodel)
                 implementation(libs.sqlDelight.android)
                 implementation(libs.ktor.client.okHttp)
