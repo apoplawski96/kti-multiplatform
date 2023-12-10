@@ -63,6 +63,7 @@ fun KTIButtonShared(
     label: String,
     labelColor: Color = kti_softblack,
     backgroundColor: Color = kti_accent,
+    backgroundColorDisabled: Color = backgroundColor.copy(alpha = 0.7f),
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     icon: ImageResource? = null,
@@ -70,8 +71,11 @@ fun KTIButtonShared(
     enabled: Boolean = true,
 ) {
     Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(backgroundColor = backgroundColor),
+        onClick = { if (enabled) onClick.invoke() },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = backgroundColor,
+            disabledBackgroundColor = backgroundColorDisabled,
+        ),
         contentPadding = PaddingValues(vertical = 0.dp, horizontal = 12.dp),
         shape = RoundedCornerShape(16.dp),
         modifier = modifier,

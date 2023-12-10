@@ -47,10 +47,12 @@ import com.example.myapplication.model.TopCategory
 import com.example.myapplication.screens.interviewCurated.model.InterviewChatItemUiModel
 import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_dark_blue
+import com.example.myapplication.theme.kti_dark_grey
 import com.example.myapplication.theme.kti_green
 import com.example.myapplication.theme.kti_grey
 import com.example.myapplication.theme.kti_light_blue
 import com.example.myapplication.theme.kti_red
+import com.example.myapplication.theme.kti_red_wrong
 import com.example.myapplication.theme.kti_softblack
 import com.example.myapplication.theme.kti_softwhite
 
@@ -287,27 +289,29 @@ private fun ColumnScope.ControlSection(
             KTIButtonShared(
                 label = "I knew it!",
                 onClick = addPointClick,
-                icon = SharedRes.images.check_new,
-                iconColor = kti_green,
+//                icon = SharedRes.images.check_new,
+                iconColor = if (inputEnabled) kti_softwhite else kti_grey,
                 enabled = inputEnabled,
-                backgroundColor = kti_softwhite,
+                backgroundColor = kti_green,
+                labelColor = if (inputEnabled) kti_softwhite else kti_grey,
             )
             KTIButtonShared(
                 label = "I was confused :(",
                 onClick = noPointClick,
-                icon = SharedRes.images.cross_new,
-                iconColor = kti_red,
+//                icon = SharedRes.images.cross_new,
+                iconColor = if (inputEnabled) kti_softwhite else kti_grey,
                 enabled = inputEnabled,
-                backgroundColor = kti_softwhite,
+                backgroundColor = if (inputEnabled) kti_red_wrong else kti_red_wrong.copy(alpha = 0.7f),
+                labelColor = if (inputEnabled) kti_softblack else kti_grey,
             )
             KTIButtonShared(
                 label = if (isAnswerExpanded.not()) "Show answer" else "Hide answer",
                 onClick = showAnswerClick,
                 icon = if (isAnswerExpanded.not()) SharedRes.images.arrow_up else SharedRes.images.arrow_down,
-                iconColor = if (isAnswerExpanded.not()) kti_softblack else kti_softwhite,
+                iconColor = if (inputEnabled) kti_softblack else kti_grey,
                 enabled = inputEnabled,
-                backgroundColor = if (isAnswerExpanded.not()) kti_softwhite else kti_accent,
-                labelColor = if (isAnswerExpanded.not()) kti_softblack else kti_softwhite
+                backgroundColor = kti_softwhite,
+                labelColor = if (inputEnabled) kti_softblack else kti_grey
             )
         }
     }
