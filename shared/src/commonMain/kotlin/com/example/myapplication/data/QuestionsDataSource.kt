@@ -2,6 +2,7 @@ package com.example.myapplication.data
 
 import com.example.myapplication.common.JsonFileReader
 import com.example.myapplication.model.schema.QuestionSchema
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 private const val FILE_NAME_DROID = "questions_android.json"
@@ -75,8 +76,6 @@ class QuestionsDataSource(private val jsonFileReader: JsonFileReader) {
 
     private fun decodeQuestionsFromFile(fileName: String): List<QuestionSchema> {
         val jsonFileContent = jsonFileReader.readJsonFile(fileName)
-
-//        return Json.decodeFromString(jsonFileContent)
-        return listOf()
+        return Json.decodeFromString(jsonFileContent)
     }
 }
