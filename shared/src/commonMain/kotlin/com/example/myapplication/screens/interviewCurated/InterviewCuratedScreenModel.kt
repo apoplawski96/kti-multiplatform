@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-private const val interval = 800L
+private const val interval = 200L
 
 class InterviewCuratedScreenModel(
     private val questionsRepository: QuestionsRepository,
