@@ -44,6 +44,7 @@ import com.example.myapplication.compose.KTIIcon
 import com.example.myapplication.compose.KTITextNew
 import com.example.myapplication.compose.KTITopAppBar
 import com.example.myapplication.compose.KTIVerticalSpacer
+import com.example.myapplication.compose.LoadingAnimation
 import com.example.myapplication.di.getScreenModel
 import com.example.myapplication.model.Question
 import com.example.myapplication.model.TopCategory
@@ -218,7 +219,7 @@ private fun LazyItemScope.InterviewerBubbleChatItem(chatItem: InterviewChatItemU
                 }
 
                 InterviewChatItemUiModel.InterviewerMessage.Writing -> {
-                    KTITextNew("...")
+                    LoadingAnimation()
                 }
             }
         }
@@ -263,7 +264,7 @@ private fun LazyItemScope.CandidateBubbleChatItem(chatItem: InterviewChatItemUiM
                 }
 
                 InterviewChatItemUiModel.CandidateMessage.Writing -> {
-                    KTITextNew("...")
+                    LoadingAnimation(circleColor = kti_softblack)
                 }
             }
         }
