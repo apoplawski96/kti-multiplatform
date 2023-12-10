@@ -40,7 +40,7 @@ import com.example.myapplication.compose.clickableNoRipple
 import com.example.myapplication.di.getScreenModel
 import com.example.myapplication.model.TopCategory
 import com.example.myapplication.screens.categories.CategoriesScreenModel
-import com.example.myapplication.screens.interviewCurated.InterviewCuratedScreen
+import com.example.myapplication.screens.interviewCurated.InterviewChatScreen
 import com.example.myapplication.screens.interviewSetup.model.SelectableCategory
 import com.example.myapplication.theme.kti_accent
 import com.example.myapplication.theme.kti_black_30alpha
@@ -64,7 +64,7 @@ object InterviewSetupScreen : Screen {
             lazyGridState = rememberLazyGridState(),
             onGoToInterviewClick = {
                 navigator.push(
-                    InterviewCuratedScreen(
+                    InterviewChatScreen(
                         categories = categoriesState.filter { it.isSelected }.map { it.category }
                     )
                 )

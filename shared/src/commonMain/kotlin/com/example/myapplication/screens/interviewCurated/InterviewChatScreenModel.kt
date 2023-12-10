@@ -18,7 +18,7 @@ import kotlin.random.Random
 
 private const val interval = 200L
 
-class InterviewCuratedScreenModel(
+class InterviewChatScreenModel(
     private val questionsRepository: QuestionsRepository,
 ) : ScreenModel {
 

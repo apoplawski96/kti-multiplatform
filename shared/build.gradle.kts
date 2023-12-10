@@ -85,6 +85,8 @@ kotlin {
                 implementation(libs.bundles.ktor.common)
                 implementation(libs.touchlab.stately)
 
+//                implementation("io.coil-kt.coil3:coil:3.0.0-SNAPSHOT")
+//                implementation("io.coil-kt.coil3:coil-network:3.0.0-SNAPSHOT")
 //                // For Adaptive UI components
 //                implementation("com.mohamedrejeb.calf:calf-ui:0.1.1")
 //

@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.appkickstarter.shared.SharedRes
 import com.example.myapplication.compose.KTIButtonShared
+import com.example.myapplication.compose.KTIChatTopAppBar
 import com.example.myapplication.compose.KTIColumnWithGradient
 import com.example.myapplication.compose.KTIHorizontalSpacer
 import com.example.myapplication.compose.KTIIcon
@@ -56,11 +57,11 @@ import com.example.myapplication.theme.kti_red
 import com.example.myapplication.theme.kti_softblack
 import com.example.myapplication.theme.kti_softwhite
 
-class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen {
+class InterviewChatScreen(private val categories: List<TopCategory>) : Screen {
 
     @Composable
     override fun Content() {
-        val screenModel: InterviewCuratedScreenModel = getScreenModel()
+        val screenModel: InterviewChatScreenModel = getScreenModel()
 
         val scoreboardState = screenModel.scoreboardState.collectAsState().value
         val chatState = screenModel.screenState.collectAsState().value
@@ -72,7 +73,7 @@ class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen
         LaunchedEffect(null) { screenModel.initQuestions(categories) }
 
         LaunchedEffect(chatState, inputEnabledState) {
-            if (chatState is InterviewCuratedScreenModel.ViewStateChat.InterviewActive && chatState.chatItems.isNotEmpty()) {
+            if (chatState is InterviewChatScreenModel.ViewStateChat.InterviewActive && chatState.chatItems.isNotEmpty()) {
                 chatListState.animateScrollToItem(chatState.chatItems.lastIndex)
             }
         }
@@ -89,12 +90,10 @@ class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen
     }
 }
 
-private val horizontalPadding = 8.dp
-
 @Composable
 private fun InterviewChatScreenContent(
-    screenStateChat: InterviewCuratedScreenModel.ViewStateChat,
-    scoreboardState: InterviewCuratedScreenModel.Scoreboard,
+    screenStateChat: InterviewChatScreenModel.ViewStateChat,
+    scoreboardState: InterviewChatScreenModel.Scoreboard,
     onAddPointClick: () -> Unit,
     onNoPointClick: () -> Unit,
     inputEnabled: Boolean,
@@ -103,12 +102,9 @@ private fun InterviewChatScreenContent(
 ) {
     val isAnswerExpanded = rememberSaveable(screenStateChat) { mutableStateOf(false) }
     KTIColumnWithGradient {
-        KTITopAppBar(
-            title = "Interview Simulation, " + "Score: ${scoreboardState.questionsAnswered}/${scoreboardState.questionsAsked}",
-            iconsSection = { },
-        )
+        KTIChatTopAppBar()
         when (screenStateChat) {
-            is InterviewCuratedScreenModel.ViewStateChat.InterviewActive -> {
+            is InterviewChatScreenModel.ViewStateChat.InterviewActive -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Bottom,
@@ -172,7 +168,7 @@ private fun InterviewChatScreenContent(
                 }
             }
 
-            is InterviewCuratedScreenModel.ViewStateChat.InterviewFinished -> {
+            is InterviewChatScreenModel.ViewStateChat.InterviewFinished -> {
                 KTITextNew("no questions left", fontSize = 16.sp, fontWeight = FontWeight.W700)
             }
         }

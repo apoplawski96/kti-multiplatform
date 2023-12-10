@@ -7,7 +7,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.example.myapplication.screens.categories.CategoriesScreenModel
 import com.example.myapplication.screens.home.HomeScreenModel
 import com.example.myapplication.screens.interviewAi.AIInterviewScreenModel
-import com.example.myapplication.screens.interviewCurated.InterviewCuratedScreenModel
+import com.example.myapplication.screens.interviewCurated.InterviewChatScreenModel
 import com.example.myapplication.screens.interviewSetup.InterviewSetupScreenModel
 import com.example.myapplication.screens.list.QuestionsListScreenModel
 import com.example.myapplication.screens.subcategories.SubCategoriesScreenModel
@@ -35,5 +35,5 @@ val screenModelModule = module {
     factoryOf(::QuestionsListScreenModel)
     factoryOf(::CategoriesScreenModel)
     factoryOf(::InterviewSetupScreenModel)
-    factoryOf(::InterviewCuratedScreenModel)
+    factoryOf(::InterviewChatScreenModel)
 }
