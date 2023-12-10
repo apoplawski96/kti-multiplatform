@@ -52,6 +52,19 @@ class InterviewCuratedScreenModel(
         initialValue = false
     )
 
+    val currentQuestion = screenState.map { screenState ->
+        if (screenState is ViewStateChat.InterviewActive) {
+            val question = screenState.chatItems.lastOrNull { it is InterviewChatItemUiModel.InterviewerMessage.QuestionAsked } as? InterviewChatItemUiModel.InterviewerMessage.QuestionAsked
+            question?.question
+        } else {
+            null
+        }
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.Lazily,
+        initialValue = null
+    )
+
     fun initQuestions(categories: List<TopCategory>) {
         val questions = questionsRepository.getQuestionsForCategories(categories)
 

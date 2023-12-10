@@ -37,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -73,6 +74,7 @@ class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen
         val scoreboardState = screenModel.scoreboardState.collectAsState().value
         val chatState = screenModel.screenState.collectAsState().value
         val inputEnabledState = screenModel.inputEnabled.collectAsState().value
+        val currentQuestion = screenModel.currentQuestion.collectAsState().value
 
         val chatListState = rememberLazyListState()
 
@@ -91,6 +93,7 @@ class InterviewCuratedScreen(private val categories: List<TopCategory>) : Screen
             screenStateChat = chatState,
             inputEnabled = inputEnabledState,
             chatListState = chatListState,
+            currentQuestion = currentQuestion,
         )
     }
 }
@@ -105,6 +108,7 @@ private fun InterviewChatScreenContent(
     onNoPointClick: () -> Unit,
     inputEnabled: Boolean,
     chatListState: LazyListState,
+    currentQuestion: Question?,
 ) {
     val isAnswerExpanded = rememberSaveable(screenStateChat) { mutableStateOf(false) }
     KTIColumnWithGradient {
@@ -143,9 +147,9 @@ private fun InterviewChatScreenContent(
                         }
                         androidx.compose.animation.AnimatedVisibility(
                             isAnswerExpanded.value,
-                            modifier = Modifier.align(Alignment.BottomEnd)
+                            modifier = Modifier.align(Alignment.BottomEnd).padding(start = 32.dp, end = 16.dp, bottom = 4.dp)
                         ) {
-                            Box(
+                            Column(
                                 modifier = Modifier
                                     .clip(
                                         RoundedCornerShape(
@@ -155,12 +159,10 @@ private fun InterviewChatScreenContent(
                                             bottomEnd = 0.dp,
                                         )
                                     )
-                                    .background(kti_dark_blue)
+                                    .background(kti_softwhite)
                                     .padding(vertical = 8.dp, horizontal = 12.dp)
                             ) {
-                                // showing only first answer, TODO fix
-                                val answer = (screenStateChat.chatItems.firstOrNull { it is InterviewChatItemUiModel.InterviewerMessage.QuestionAsked } as InterviewChatItemUiModel.InterviewerMessage.QuestionAsked).question.answer
-                                KTITextNew(answer)
+                                KTITextNew(currentQuestion?.answer ?: "Current question is null")
                             }
                         }
                     }
@@ -296,7 +298,7 @@ private fun ColumnScope.ControlSection(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 KTIButtonShared(
-                    label = "I knew it",
+                    label = "I knew it!",
                     onClick = addPointClick,
                     icon = SharedRes.images.check_new,
                     iconColor = kti_green,
@@ -304,7 +306,7 @@ private fun ColumnScope.ControlSection(
                     backgroundColor = kti_softwhite,
                 )
                 KTIButtonShared(
-                    label = "I was confused",
+                    label = "I was confused :(",
                     onClick = noPointClick,
                     icon = SharedRes.images.cross_new,
                     iconColor = kti_red,
