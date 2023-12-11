@@ -43,6 +43,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
 
+                // ********************************** KICKSTARTER **********************************
+
                 implementation("io.ktor:ktor-client-core:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
@@ -71,6 +73,8 @@ kotlin {
                 api("cafe.adriel.voyager:voyager-transitions:$voyagerVersion")
                 implementation("cafe.adriel.voyager:voyager-koin:$voyagerVersion")
 
+                // ********************************** KICKSTARTER **********************************
+
                 // kti
                 implementation(libs.sqlDelight.coroutinesExt)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
@@ -96,6 +100,8 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                // ********************************** KICKSTARTER **********************************
+
                 implementation("androidx.appcompat:appcompat:1.5.1")
                 implementation("androidx.core:core-ktx:1.9.0")
                 implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
@@ -108,7 +114,7 @@ kotlin {
                 // Compose
                 api("io.insert-koin:koin-androidx-compose:$koin_android_compose_version")
 
-//                implementation ("com.google.accompanist:accompanist-systemuicontroller:0.33.2-alpha")
+                // ********************************** KICKSTARTER **********************************
 
 
 //                implementation(libs.androidx.lifecycle.viewmodel)
@@ -119,8 +125,10 @@ kotlin {
         }
         val iosMain by getting {
             dependencies {
+                // ********************************** KICKSTARTER **********************************
                 implementation("io.ktor:ktor-client-darwin:$ktorVersion")
                 implementation("io.ktor:ktor-client-ios:$ktorVersion")
+                // ********************************** KICKSTARTER **********************************
             }
         }
         val iosTest by getting
