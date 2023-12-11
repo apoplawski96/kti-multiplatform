@@ -37,7 +37,7 @@ kotlin {
     val koin_android_version = "3.3.3"
     val koin_android_compose_version = "3.4.2"
     val voyagerVersion = "1.0.0-rc04"
-    val mokoResourcesVersion = "0.23.0"
+    val mokoResourcesVersion = "0.21.2"
 
     sourceSets {
         val commonMain by getting {
