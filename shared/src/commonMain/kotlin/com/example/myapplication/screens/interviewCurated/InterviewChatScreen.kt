@@ -56,7 +56,7 @@ import com.example.myapplication.theme.kti_red_wrong
 import com.example.myapplication.theme.kti_softblack
 import com.example.myapplication.theme.kti_softwhite
 
-class InterviewChatScreen(private val categories: List<TopCategory>) : Screen {
+internal class InterviewChatScreen(private val categories: List<TopCategory>) : Screen {
 
     @Composable
     override fun Content() {

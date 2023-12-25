@@ -51,7 +51,7 @@ import com.example.myapplication.theme.kti_grey
 import com.example.myapplication.theme.kti_light_grey
 import com.example.myapplication.theme.kti_softblack
 
-object InterviewSetupScreen : Screen {
+internal object InterviewSetupScreen : Screen {
 
     @Composable
     override fun Content() {
